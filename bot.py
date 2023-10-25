@@ -8,7 +8,7 @@ import responses
 async def send_message(message, user_message):
     if user_message.startswith('!w3c'):
         print(f'"{message.content}", from {message.author} via {message.guild}')
-        debugging_mode = True
+        debugging_mode = False
         if debugging_mode:
             if str(message.guild) != 'SageNoobTesting':
                 await message.channel.send('I am sorry, I am out of service right now. I am currently in development, '
