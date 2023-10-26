@@ -22,9 +22,8 @@ def handle_response(message):
                             '`Bot usage (help)`:\n'
                             '\tCommand: `!w3c help` or just `!w3c` Prints this message.\n'
                             'Disclaimer: The W3C Bot is in BETA phase and currently being in development, apologies '
-                            'if you encounter bugs or the bot is offline. For anything related, feel free to'
-                            'reach out to @SageNoob via Discord.'
-                            )
+                            'if you encounter bugs or the bot is offline. For anything related, feel free to reach out'
+                            ' to @SageNoob via Discord or on github: https://github.com/0nlyDev/w3c-discord-bot')
             return help_message
         elif bot_command + ' stats ' in message:
             try:
