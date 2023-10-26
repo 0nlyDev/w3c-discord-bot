@@ -1,6 +1,5 @@
 import json
 import re
-
 import discord
 import responses
 
@@ -8,7 +7,7 @@ import responses
 async def send_message(message, user_message):
     if user_message.startswith('!w3c'):
         print(f'"{message.content}", from {message.author} via {message.guild}')
-        debugging_mode = False
+        debugging_mode = True
         if debugging_mode:
             if str(message.guild) != 'SageNoobTesting':
                 await message.channel.send('I am sorry, I am out of service right now. I am currently in development, '
@@ -17,17 +16,11 @@ async def send_message(message, user_message):
                                            'github: https://github.com/0nlyDev/w3c-discord-bot')
                 return
         try:
-            response = responses.handle_response(user_message)
+            response, view = responses.handle_response(user_message)
             if response:
-                await message.channel.send(response)
+                await message.channel.send(response, view=view)
             else:
-                await message.channel.send('I am sorry, something went wrong. Make sure that the player\'s '
-                                           'BattleNetTag and Region are correct or try with fewer optional arguments.'
-                                           '\nUse `!w3c help` or just `!w3c` in chat to see available bot commands and '
-                                           'usage examples. If the issue still persists, reach out to '
-                                           '`@SageNoob` via Discord or on github: '
-                                           'https://github.com/0nlyDev/w3c-discord-bot\nDisclaimer: The w3c bot is '
-                                           'still in beta.')
+                await message.channel.send('I am sorry, something went wrong...')
         except Exception as e:
             print(e)
 
