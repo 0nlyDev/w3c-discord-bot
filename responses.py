@@ -24,7 +24,11 @@ def handle_response(message):
             response = response_stats(message)
             if isinstance(response, PlayerSearchResultsSelect):
                 view = response
-                return 'Select a player bellow:', view
+                if len(view.children) > 0:
+                    return 'Select a player bellow:', view
+                else:
+                    return 'No players found.', view
+
             return response, view
         elif bot_command + ' modes' == message:
             view = GameModeSelect()
