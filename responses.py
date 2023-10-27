@@ -1,7 +1,16 @@
+import json
+
 from parse_player_stats import parse_player_stats
 from w3c_endpoints.player_stats import get_player_stats
 from w3c_endpoints.active_modes import get_active_modes
+from w3c_endpoints.player_search import player_search
+
 import discord
+
+with open('assets/emojis.json', 'r', encoding="utf-8") as file:
+    EMOJIS = json.load(file)
+
+player_name = None
 
 
 def handle_response(message):
@@ -12,12 +21,17 @@ def handle_response(message):
         if bot_command + ' help' == message or bot_command == message:
             return response_help_message(), view
         elif bot_command + ' stats ' in message:
-            return response_stats(message), view
+            response = response_stats(message)
+            if isinstance(response, PlayerSearchResultsSelect):
+                view = response
+                return 'Select a player bellow:', view
+            return response, view
         elif bot_command + ' modes' == message:
             view = GameModeSelect()
+            print('view', type(view), view)
             return f"Select a game mode below:", view
         elif bot_command in message:
-            return respond_with_command_not_found(), view
+            return response_command_not_found(), view
 
     return None, None  # If nothing matches, return None for both response and view
 
@@ -31,11 +45,34 @@ class GameModeSelect(discord.ui.View):
 class GameModeSelectMenu(discord.ui.Select):
     def __init__(self):
         active_modes = get_active_modes()
-        options = [discord.SelectOption(label=mode, value=mode) for mode in active_modes.keys()]
+        active_modes = {k + " " + EMOJIS["1"] + EMOJIS["6"] for k in active_modes.keys()}
+        options = [discord.SelectOption(label=mode, value=mode) for mode in active_modes]
         super().__init__(placeholder="Choose a game mode", options=options)
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"You chose: {self.values[0]}")
+
+
+class PlayerSearchResultsSelect(discord.ui.View):
+    def __init__(self, player_name):
+        super().__init__()
+        search_results = player_search(player_name)
+        chunks = split_list(search_results)
+
+        # Add up to 5 chunks to the view
+        for idx, chunk in enumerate(chunks[:5]):
+            self.add_item(PlayerSearchMenu(chunk,idx))
+
+
+
+class PlayerSearchMenu(discord.ui.Select):
+    def __init__(self, players, idx):  # Now players is a list of <= 25 players
+        options = [discord.SelectOption(label=player, value=player) for player in players]
+        super().__init__(placeholder=f'Search result {idx+1} (Players)', options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f"You chose: {self.values[0]}")
+
 
 
 def response_help_message():
@@ -60,22 +97,40 @@ def response_help_message():
 
 
 def response_stats(message):
-    try:
-        _argument1, _argument2, *rest = message.split(' ')
-        bnet_tag = rest[0] if rest else None
-        region = rest[1] if len(rest) > 1 else None
-        game_mode = rest[2] if len(rest) > 2 else None
-        race = rest[3] if len(rest) > 3 else None
-        season = rest[4] if len(rest) > 4 else None
+    # try:
+    _argument1, _argument2, *remaining_items = message.split(' ')
+    bnet_tag_or_player_name = remaining_items[0] if remaining_items else None
+    region = remaining_items[1] if len(remaining_items) > 1 else None
+    game_mode = remaining_items[2] if len(remaining_items) > 2 else None
+    race = remaining_items[3] if len(remaining_items) > 3 else None
+    season = remaining_items[4] if len(remaining_items) > 4 else None
 
+    print(bnet_tag_or_player_name)
+
+    if '#' in bnet_tag_or_player_name:  # bnet_tag was provided
+        bnet_tag = bnet_tag_or_player_name
         player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-        print('player stats:', player_stats)
         return parse_player_stats(player_stats)
-    except Exception as e:
-        print(e)
-        return
+    # elif '@' in bnet_tag_or_player_name:  # get bnet_tag from @mentioned discord user
+    #     return
+    else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
+        global player_name
+        player_name = bnet_tag_or_player_name
+        return PlayerSearchResultsSelect(player_name)
+        # bnet_tag = select_menu_choice
+        # player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
+
+    # print('player stats:', player_stats)
+    # return parse_player_stats(player_stats)
+    # except Exception as e:
+    #     raise(e)
+    #     return
 
 
-def respond_with_command_not_found():
+def response_command_not_found():
     return ('Command not found, please use `!w3c help` or just `!w3c` in chat, to see available bot commands '
             'and usage examples.')
+
+
+def split_list(input_list, max_size=25):
+    return [input_list[i:i + max_size] for i in range(0, len(input_list), max_size)]

@@ -20,9 +20,9 @@ async def send_message(message, user_message):
             if response:
                 await message.channel.send(response, view=view)
             else:
-                await message.channel.send('I am sorry, something went wrong...')
+                await message.channel.send(f'I am sorry, something went wrong... {str(response)}')
         except Exception as e:
-            print(e)
+            raise(e)
 
 
 def run_discord_bot():
