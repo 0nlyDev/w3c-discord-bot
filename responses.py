@@ -65,18 +65,16 @@ class PlayerSearchResultsSelect(discord.ui.View):
 
         # Add up to 5 chunks to the view
         for idx, chunk in enumerate(chunks[:5]):
-            self.add_item(PlayerSearchMenu(chunk,idx))
-
+            self.add_item(PlayerSearchMenu(chunk, idx))
 
 
 class PlayerSearchMenu(discord.ui.Select):
     def __init__(self, players, idx):  # Now players is a list of <= 25 players
         options = [discord.SelectOption(label=player, value=player) for player in players]
-        super().__init__(placeholder=f'Search result {idx+1} (Players)', options=options)
+        super().__init__(placeholder=f'Search result {idx + 1} (Players)', options=options)
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"You chose: {self.values[0]}")
-
 
 
 def response_help_message():
