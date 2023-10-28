@@ -58,9 +58,8 @@ def handle_response(message):
 
 
 class PlayerSearchMenu(discord.ui.View):
-    def __init__(self, player_name, region, game_mode, race, season):
+    def __init__(self, search_results, player_name, region, game_mode, race, season):
         super().__init__()
-        search_results = player_search(player_name)
         self.add_item(PlayerSearchSelect(search_results, region, game_mode, race, season))
 
 
@@ -132,7 +131,9 @@ def response_stats(message):
     else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
         global player_name
         player_name = bnet_tag_or_player_name
-        return PlayerSearchMenu(player_name, region, game_mode, race, season)
+        search_results = player_search(player_name)
+        if search_results:
+            return PlayerSearchMenu(search_results, player_name, region, game_mode, race, season)
 
 
 def response_command_not_found():

@@ -20,7 +20,7 @@ async def send_message(message, user_message):
             if response:
                 await message.reply(response, view=view, mention_author=False)
             else:
-                await message.reply(f'I am sorry, something went wrong... {str(response)}', mention_author=False)
+                await message.reply('Player not found.', mention_author=False)
         except Exception as e:
             raise e
 
