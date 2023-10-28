@@ -10,19 +10,19 @@ async def send_message(message, user_message):
         debugging_mode = True
         if debugging_mode:
             if str(message.guild) != 'SageNoobTesting':
-                await message.channel.send('I am sorry, I am out of service right now. I am currently in development, '
-                                           'being upgraded with more bells and whistles, please check back later.\nIf '
-                                           'you have any questions, reach out to `@SageNoob` via Discord or on '
-                                           'github: https://github.com/0nlyDev/w3c-discord-bot')
+                await message.reply('I am sorry, I am out of service right now. I am currently in development, '
+                                    'being upgraded with more bells and whistles, please check back later.\nIf '
+                                    'you have any questions, reach out to `@SageNoob` via Discord or on '
+                                    'github: https://github.com/0nlyDev/w3c-discord-bot', mention_author=False)
                 return
         try:
             response, view = responses.handle_response(user_message)
             if response:
-                await message.channel.send(response, view=view)
+                await message.reply(response, view=view, mention_author=False)
             else:
-                await message.channel.send(f'I am sorry, something went wrong... {str(response)}')
+                await message.reply(f'I am sorry, something went wrong... {str(response)}', mention_author=False)
         except Exception as e:
-            raise(e)
+            raise e
 
 
 def run_discord_bot():

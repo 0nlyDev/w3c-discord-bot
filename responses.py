@@ -73,7 +73,6 @@ class PlayerSearchSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
-        # await interaction.response.send_message(f"You chose: {user_choice}")
         if 'Load more results...' in user_choice:
             pass
         else:
