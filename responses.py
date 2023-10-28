@@ -22,7 +22,7 @@ def handle_response(message):
             return response_help_message(), view
         elif bot_command + ' stats ' in message:
             response = response_stats(message)
-            if isinstance(response, PlayerSearchResultsSelect):
+            if isinstance(response, PlayerSearchMenu):
                 view = response
                 if len(view.children) > 0:
                     return 'Select a player bellow:', view
@@ -31,7 +31,7 @@ def handle_response(message):
 
             return response, view
         elif bot_command + ' modes' == message:
-            view = GameModeSelect()
+            # view = GameModeSelect()
             print('view', type(view), view)
             return f"Select a game mode below:", view
         elif bot_command in message:
@@ -40,38 +40,35 @@ def handle_response(message):
     return None, None  # If nothing matches, return None for both response and view
 
 
-class GameModeSelect(discord.ui.View):
-    def __init__(self):
-        super().__init__()
-        self.add_item(GameModeSelectMenu())
+# class GameModeSelect(discord.ui.View):
+#     def __init__(self):
+#         super().__init__()
+#         self.add_item(GameModeSelectMenu())
+#
+#
+# class GameModeSelectMenu(discord.ui.Select):
+#     def __init__(self):
+#         active_modes = get_active_modes()
+#         active_modes = {k + " " + EMOJIS["1"] + EMOJIS["6"] for k in active_modes.keys()}
+#         options = [discord.SelectOption(label=mode, value=mode) for mode in active_modes]
+#         super().__init__(placeholder="Choose a game mode", options=options)
+#
+#     async def callback(self, interaction: discord.Interaction):
+#         await interaction.response.send_message(f"You chose: {self.values[0]}")
 
 
-class GameModeSelectMenu(discord.ui.Select):
-    def __init__(self):
-        active_modes = get_active_modes()
-        active_modes = {k + " " + EMOJIS["1"] + EMOJIS["6"] for k in active_modes.keys()}
-        options = [discord.SelectOption(label=mode, value=mode) for mode in active_modes]
-        super().__init__(placeholder="Choose a game mode", options=options)
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"You chose: {self.values[0]}")
-
-
-class PlayerSearchResultsSelect(discord.ui.View):
-    def __init__(self, player_name):
+class PlayerSearchMenu(discord.ui.View):
+    def __init__(self, player_name, region, game_mode, race, season):
         super().__init__()
         search_results = player_search(player_name)
-        chunks = split_list(search_results)
-
-        # Add up to 5 chunks to the view
-        for idx, chunk in enumerate(chunks[:5]):
-            self.add_item(PlayerSearchMenu(chunk, idx))
+        self.add_item(PlayerSearchSelect(search_results, region, game_mode, race, season))
 
 
-class PlayerSearchMenu(discord.ui.Select):
-    def __init__(self, players, idx):  # Now players is a list of <= 25 players
+class PlayerSearchSelect(discord.ui.Select):
+    def __init__(self, players, region, game_mode, race, season):  # Now players is a list of <= 25 players
+        self.region, self.game_mode, self.race, self.season = region, game_mode, race, season
         options = [discord.SelectOption(label=player, value=player) for player in players]
-        super().__init__(placeholder=f'Search result {idx + 1} (Players)', options=options)
+        super().__init__(placeholder='Search results (Players)', options=options)
 
     async def callback(self, interaction: discord.Interaction):
         user_choice = interaction.data['values'][0]
@@ -81,7 +78,9 @@ class PlayerSearchMenu(discord.ui.Select):
             pass
         else:
             bnet_tag = user_choice.split(' ')[0]
-            player_stats = parse_player_stats(get_player_stats(bnet_tag, 'eu'))
+            player_stats = parse_player_stats(
+                get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
+            )
             await interaction.response.send_message(player_stats)
 
 
@@ -126,7 +125,7 @@ def response_stats(message):
     else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
         global player_name
         player_name = bnet_tag_or_player_name
-        return PlayerSearchResultsSelect(player_name)
+        return PlayerSearchMenu(player_name, region, game_mode, race, season)
         # bnet_tag = select_menu_choice
         # player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
 
