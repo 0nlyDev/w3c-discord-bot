@@ -66,7 +66,7 @@ def get_player_stats(bnet_tag, region, game_mode=None, race=None, season=None):
         if selected_stats:
             return selected_stats
     except Exception as e:
-        raise(e)
+        raise e
 
 
 # for i in get_player_stats('COLORADO16#11383', 'eu', '2vs2'):

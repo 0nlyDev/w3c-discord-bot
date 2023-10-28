@@ -125,14 +125,6 @@ def response_stats(message):
         global player_name
         player_name = bnet_tag_or_player_name
         return PlayerSearchMenu(player_name, region, game_mode, race, season)
-        # bnet_tag = select_menu_choice
-        # player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-
-    # print('player stats:', player_stats)
-    # return parse_player_stats(player_stats)
-    # except Exception as e:
-    #     raise(e)
-    #     return
 
 
 def response_command_not_found():
