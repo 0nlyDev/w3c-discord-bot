@@ -111,7 +111,7 @@ def response_help_message():
                     'Winds of magic can be unpredictable. Should you encounter misplaced enchantments or if the bot '
                     'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
                     'this spellwork is an open grimoire, a testament to the open source magic of our world. Brave '
-                    'souls wishing to enrich its pages are welcome to journey to the arcane library of Github: '
+                    'souls wishing to enrich its pages are welcome to journey to the arcane library 📚 of Github: '
                     'https://github.com/0nlyDev/w3c-discord-bot. Your wisdom and contributions illuminate our path.')
 
     return help_message
