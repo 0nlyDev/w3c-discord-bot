@@ -25,7 +25,7 @@ def handle_response(message):
             if isinstance(response, PlayerSearchMenu):
                 view = response
                 if len(view.children) > 0:
-                    return '🌌 From the depths of the Dark Portal, select your champion below.', view
+                    return '🌌 From the depths of the Dark Portal, select your champion below:', view
             return response, view
         elif bot_command + ' modes' == message:
             battle_modes = ', '.join([f'`{k}`' for k in get_active_modes().keys()])
