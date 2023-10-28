@@ -79,9 +79,31 @@ class PlayerSearchSelect(discord.ui.Select):
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
-            print(_player_stats, '_player_stats')
-            player_stats = parse_player_stats(_player_stats)
-            await interaction.response.send_message(player_stats)
+            # print('_player_stats'_player_stats)
+            parsed_player_stats = parse_player_stats(_player_stats)
+            print('len(parsed_player_stats)', len(parsed_player_stats))
+            if len(parsed_player_stats) >= 2000:  # more than 2k characters limitation by discord
+                split_stats = parsed_player_stats.split('\n\n')
+                stats_in_chunks = []
+                current_chunk = []
+                char_counter = 0
+                for idx, stat in enumerate(split_stats):
+                    if char_counter + len(stat) + 2 <= 2000:
+                        current_chunk.append(stat)
+                        char_counter += len(stat) + 2
+                    else:
+                        stats_in_chunks.append(current_chunk)
+                        current_chunk = [stat]  # Instead of clearing and then appending, directly assign.
+                        char_counter = len(stat) + 2
+
+                # After the loop, append any remaining stats in the current_chunk
+                if current_chunk:
+                    stats_in_chunks.append(current_chunk)
+
+                for stats in stats_in_chunks:
+                    await interaction.response.send_message('\n\n'.join(stats))
+            else:
+                await interaction.response.send_message(parsed_player_stats)
 
 
 def response_help_message():
