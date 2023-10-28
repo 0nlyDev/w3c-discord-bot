@@ -19,7 +19,7 @@ def player_search_endpoint(player_name, last_object_id=None):
     if last_object_id is None:
         querystring = {"search": player_name, "pageSize": "20"}
     else:
-        querystring = {"search": player_name, "pageSize": "20", "lastObjectId": last_object_id}
+        querystring = {"search": player_name, "pageSize": "20", "lastObjectId": last_object_id.replace('#', '%23')}
 
     payload = ""
     headers = {"User-Agent": "insomnia/8.3.0"}

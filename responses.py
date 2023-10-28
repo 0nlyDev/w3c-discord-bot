@@ -45,15 +45,24 @@ class PlayerSearchMenu(discord.ui.View):
 
 class PlayerSearchSelect(discord.ui.Select):
     def __init__(self, search_results, region, game_mode, race, season):  # Now players is a list of <= 25 players
-        self.region, self.game_mode, self.race, self.season = region, game_mode, race, season
+        self.search_results, self.region, self.game_mode, self.race, self.season = (
+            search_results, region, game_mode, race, season)
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
         super().__init__(placeholder='Search results (Players)', options=options)
 
     async def callback(self, interaction: discord.Interaction):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
-        if 'Load more results...' in user_choice:
-            pass
+        if 'load more results...' in user_choice.lower():
+            new_search_results = player_search(player_name, self.search_results[-2])
+            print('self.search_results[-2]', self.search_results[-2])
+            if new_search_results:
+                new_menu_select = PlayerSearchMenu(
+                    new_search_results, self.region, self.game_mode, self.race, self.season)
+                await interaction.response.send_message('More search results...', view=new_menu_select)
+            else:
+                await interaction.response.send_message('By the Light! We\'ve reached the end of the tunnel. No more '
+                                                        'players found! Try different filters for more results...')
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
