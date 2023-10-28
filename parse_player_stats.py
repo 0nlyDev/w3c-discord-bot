@@ -4,8 +4,8 @@ from w3c_endpoints.active_modes import get_game_mode_from_id
 
 def parse_player_stats(player_stats):
     if not player_stats:
-        return 'Couldn\'t find statistics for this player.'
-    message = '**w3champions player statistics by game mode:**\n'
+        return '🌌 The Dark Portal\'s manifest reveals no stats for this champion.'
+    message = '**🛡️ Champion Stats 🛡️:**\n'
     for player_stat in player_stats:
         game_mode = get_game_mode_from_id(player_stat["gameMode"])
         if game_mode is None:

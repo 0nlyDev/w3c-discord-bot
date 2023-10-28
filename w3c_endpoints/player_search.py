@@ -42,7 +42,7 @@ def player_search(player_name, last_object_id=None):
         player_string = f'{bnet_tag} | seasons: {emojified_seasons}'
         players.append(player_string)
     if players:
-        players.append(f'{EMOJIS["arrows_clockwise"]} Load more results...')
+        players.append('🌀 Summon more champions from the depths...')
     print(len(players), players)
     return players
 

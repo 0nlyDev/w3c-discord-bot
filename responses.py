@@ -25,11 +25,11 @@ def handle_response(message):
             if isinstance(response, PlayerSearchMenu):
                 view = response
                 if len(view.children) > 0:
-                    return 'Select a player bellow:', view
+                    return '🌌 From the depths of the Dark Portal, select your champion below.', view
             return response, view
         elif bot_command + ' modes' == message:
             battle_modes = ', '.join([f'`{k}`' for k in get_active_modes().keys()])
-            return f'Available battle modes: {battle_modes}', view
+            return f'⚔️ Available battle modes in the World of W3Champions: {battle_modes}', view
         elif bot_command in message:
             return response_command_not_found(), view
 
@@ -47,21 +47,23 @@ class PlayerSearchSelect(discord.ui.Select):
         self.search_results, self.region, self.game_mode, self.race, self.season = (
             search_results, region, game_mode, race, season)
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
-        super().__init__(placeholder='Search results (Players)', options=options)
+        super().__init__(placeholder='Champion manifest from the portal\'s depths:', options=options)
 
     async def callback(self, interaction: discord.Interaction):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
-        if 'load more results...' in user_choice.lower():
+        if '🌀 Summon more champions from the depths...' in user_choice:
             new_search_results = player_search(player_name, self.search_results[-2])
             print('self.search_results[-2]', self.search_results[-2])
             if new_search_results:
                 new_menu_select = PlayerSearchMenu(
                     new_search_results, self.region, self.game_mode, self.race, self.season)
-                await interaction.response.send_message('More search results...', view=new_menu_select)
+                await interaction.response.send_message('🌌 Through the Dark Portal, more champions emerge!',
+                                                        view=new_menu_select)
             else:
-                await interaction.response.send_message('By the Light! We\'ve reached the end of the tunnel. No more '
-                                                        'players found! Try different filters for more results...')
+                await interaction.response.send_message('🌌 By the Light! It seems like we\'ve reached the end of our '
+                                                        'journey! No more champions emerge from the Dark Portal. Try '
+                                                        'with a different name...')
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
@@ -79,23 +81,39 @@ class PlayerSearchSelect(discord.ui.Select):
 
 
 def response_help_message():
-    help_message = ('**W3Champions bot commands**:\n'
-                    '`Get player stats by game mode`:\n'
-                    '\tCommand: `!w3c stats <PlayerName> or !w3c stats <BattleNetTag>`\n'
-                    '\te.g. `!w3c stats happy`, or `!w3c stats happy#2384`\n'
-                    '\tOptional arguments: `<Region> <GameMode>`, `<Race>`, `<Season>`\n'
-                    '\tArguments must be in this order: `!w3c stats <PlayerName or BattleNetTag> <Region> <GameMode> '
-                    '<Race> <Season>`\n'
+    help_message = ('🔥 **W3C Bot Commands to reveal the World of W3Champions** 🔥:\n'
+                    
+                    '🔎 **Seek champions by player name to reveal their legendary stats** 🔎\n'
+                    '\tBy Elune: `!w3c stats <PlayerName>`\n'
+                    '\te.g. `!w3c stats Moon`\n'
+                    
+                    '🌌 **Conjure legendary stats by Battle Tag** 🌌⚡:\n'
+                    '\tCommand the spirits: `!w3c stats <BattleNetTag>`\n'
+                    '\te.g. `!w3c stats happy#2384`\n'
+                    
+                    '⚡ **Harness the power of runes (Optional Arguments)** ⚡:\n'
+                    '\tAdd arguments: `<Region/GameMode>`, `<Race>`, `<Season>`\n'
+                    '\t⚠️ Arguments order must be obeyed (for the time being)!: '
+                    '`!w3c stats <PlayerName> <Region> <GameMode> <Race> <Season> ⚠️`\n'
                     '\te.g. `!w3c stats moon eu ffa`\n'
+                    '\tOr if you know their Battle Tag, whisper in this order: '
+                    '`!w3c stats <BattleNetTag> <Region> <GameMode> <Race> <Season>`\n'
                     '\te.g. `!w3c stats happy#2384 eu 1vs1 ud 16`\n'
-                    '`See all available <GameMode> arguments`:\n'
-                    '\tCommand: `!w3c modes`\n'
-                    '\tPrints all active modes on w3c, e.g: `1vs1`, `2vs2`, `4vs4`, `FFA`, etc.\n'
-                    '`Bot usage (help)`:\n'
-                    '\tCommand: `!w3c help` or just `!w3c` Prints this message.\n'
-                    'Disclaimer: The W3C Bot is in BETA phase and currently being in development, apologies '
-                    'if you encounter bugs or the bot is offline. For anything related, feel free to reach out'
-                    ' to @SageNoob via Discord or on github: https://github.com/0nlyDev/w3c-discord-bot')
+                    
+                    '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
+                    '\tAncient words: `!w3c modes`\n'
+                    '\tReveals: `1vs1`, `2vs2`, `4vs4`, `FFA`, etc.\n'
+                    
+                    '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
+                    '\tSpeak thusly: `!w3c help` or simply whisper `!w3c` to hear this tale again.\n'
+                    
+                    '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
+                    'Winds of magic can be unpredictable. Should you encounter misplaced enchantments or if the bot '
+                    'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
+                    'this spellwork is an open grimoire, a testament to the open source magic of our world. Brave '
+                    'souls wishing to enrich its pages are welcome to journey to the arcane library of Github: '
+                    'https://github.com/0nlyDev/w3c-discord-bot. Your wisdom and contributions illuminate our path.')
+
     return help_message
 
 
@@ -125,8 +143,8 @@ def response_stats(message):
 
 
 def response_command_not_found():
-    return ('Command not found, please use `!w3c help` or just `!w3c` in chat, to see available bot commands '
-            'and usage examples.')
+    return ('🔮 The spirits do not recognize this spell... Use `!w3c help` or simply `!w3c` to seek guidance on the '
+            'ancient commands. 🔮')
 
 
 def split_list(input_list, max_size=25):
