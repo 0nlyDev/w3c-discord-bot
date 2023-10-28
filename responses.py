@@ -37,33 +37,16 @@ def handle_response(message):
     return None, None  # If nothing matches, return None for both response and view
 
 
-# class GameModeSelect(discord.ui.View):
-#     def __init__(self):
-#         super().__init__()
-#         self.add_item(GameModeSelectMenu())
-#
-#
-# class GameModeSelectMenu(discord.ui.Select):
-#     def __init__(self):
-#         active_modes = get_active_modes()
-#         active_modes = {k + " " + EMOJIS["1"] + EMOJIS["6"] for k in active_modes.keys()}
-#         options = [discord.SelectOption(label=mode, value=mode) for mode in active_modes]
-#         super().__init__(placeholder="Choose a game mode", options=options)
-#
-#     async def callback(self, interaction: discord.Interaction):
-#         await interaction.response.send_message(f"You chose: {self.values[0]}")
-
-
 class PlayerSearchMenu(discord.ui.View):
-    def __init__(self, search_results, player_name, region, game_mode, race, season):
+    def __init__(self, search_results, region, game_mode, race, season):
         super().__init__()
         self.add_item(PlayerSearchSelect(search_results, region, game_mode, race, season))
 
 
 class PlayerSearchSelect(discord.ui.Select):
-    def __init__(self, players, region, game_mode, race, season):  # Now players is a list of <= 25 players
+    def __init__(self, search_results, region, game_mode, race, season):  # Now players is a list of <= 25 players
         self.region, self.game_mode, self.race, self.season = region, game_mode, race, season
-        options = [discord.SelectOption(label=player, value=player) for player in players]
+        options = [discord.SelectOption(label=player, value=player) for player in search_results]
         super().__init__(placeholder='Search results (Players)', options=options)
 
     async def callback(self, interaction: discord.Interaction):
@@ -130,7 +113,7 @@ def response_stats(message):
         player_name = bnet_tag_or_player_name
         search_results = player_search(player_name)
         if search_results:
-            return PlayerSearchMenu(search_results, player_name, region, game_mode, race, season)
+            return PlayerSearchMenu(search_results, region, game_mode, race, season)
 
 
 def response_command_not_found():
