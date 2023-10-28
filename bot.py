@@ -7,7 +7,7 @@ import responses
 async def send_message(message, user_message):
     if user_message.startswith('!w3c'):
         print(f'"{message.content}", from {message.author} via {message.guild}')
-        debugging_mode = True
+        debugging_mode = False
         if debugging_mode:
             if str(message.guild) != 'SageNoobTesting':
                 await message.reply('🔮 Alas, I am temporarily sealed within a magic ward, weaving new spells and '
