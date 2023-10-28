@@ -26,9 +26,6 @@ def handle_response(message):
                 view = response
                 if len(view.children) > 0:
                     return 'Select a player bellow:', view
-                else:
-                    return 'No players found.', view
-
             return response, view
         elif bot_command + ' modes' == message:
             # view = GameModeSelect()
@@ -79,7 +76,7 @@ class PlayerSearchSelect(discord.ui.Select):
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
             parsed_player_stats = parse_player_stats(_player_stats)
 
-            # split in messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
+            # split messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
             delimiter = '\n\n'
             stats_in_chunks = list(split_stats_in_chunks_of_2k_chars(
                 parsed_player_stats.split(delimiter), delimiter))
