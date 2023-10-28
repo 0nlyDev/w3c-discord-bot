@@ -74,36 +74,21 @@ class PlayerSearchSelect(discord.ui.Select):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
         if 'Load more results...' in user_choice:
-            # return PlayerSearchMenu('Abaddon', self.region, self.game_mode, self.race, self.season)
             pass
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
-            # print('_player_stats'_player_stats)
             parsed_player_stats = parse_player_stats(_player_stats)
-            print('len(parsed_player_stats)', len(parsed_player_stats))
-            if len(parsed_player_stats) >= 2000:  # more than 2k characters limitation by discord
-                split_stats = parsed_player_stats.split('\n\n')
-                stats_in_chunks = []
-                current_chunk = []
-                char_counter = 0
-                for idx, stat in enumerate(split_stats):
-                    if char_counter + len(stat) + 2 <= 2000:
-                        current_chunk.append(stat)
-                        char_counter += len(stat) + 2
-                    else:
-                        stats_in_chunks.append(current_chunk)
-                        current_chunk = [stat]  # Instead of clearing and then appending, directly assign.
-                        char_counter = len(stat) + 2
 
-                # After the loop, append any remaining stats in the current_chunk
-                if current_chunk:
-                    stats_in_chunks.append(current_chunk)
-
-                for stats in stats_in_chunks:
-                    await interaction.response.send_message('\n\n'.join(stats))
-            else:
-                await interaction.response.send_message(parsed_player_stats)
+            # split in messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
+            delimiter = '\n\n'
+            stats_in_chunks = list(split_stats_in_chunks_of_2k_chars(
+                parsed_player_stats.split(delimiter), delimiter))
+            # Send the first chunk using the response
+            await interaction.response.send_message(stats_in_chunks[0])
+            # Send subsequent chunks as follow-ups
+            for player_stats in stats_in_chunks[1:]:
+                await interaction.followup.send(content=player_stats)
 
 
 def response_help_message():
@@ -157,3 +142,18 @@ def response_command_not_found():
 
 def split_list(input_list, max_size=25):
     return [input_list[i:i + max_size] for i in range(0, len(input_list), max_size)]
+
+
+def split_stats_in_chunks_of_2k_chars(stats, delimiter='\n\n', max_length=2000):
+    current_chunk = []
+    char_counter = 0
+    for stat in stats:
+        if char_counter + len(stat) + len(delimiter) <= max_length:
+            current_chunk.append(stat)
+            char_counter += len(stat) + len(delimiter)
+        else:
+            yield delimiter.join(current_chunk)
+            current_chunk = [stat]
+            char_counter = len(stat) + len(delimiter)
+    if current_chunk:  # handle any remaining stats
+        yield delimiter.join(current_chunk)
