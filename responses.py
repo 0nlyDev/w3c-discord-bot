@@ -28,9 +28,8 @@ def handle_response(message):
                     return 'Select a player bellow:', view
             return response, view
         elif bot_command + ' modes' == message:
-            # view = GameModeSelect()
-            print('view', type(view), view)
-            return f"Select a game mode below:", view
+            battle_modes = ', '.join([f'`{k}`' for k in get_active_modes().keys()])
+            return f'Available battle modes: {battle_modes}', view
         elif bot_command in message:
             return response_command_not_found(), view
 
