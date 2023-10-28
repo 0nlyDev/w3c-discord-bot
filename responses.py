@@ -74,7 +74,15 @@ class PlayerSearchMenu(discord.ui.Select):
         super().__init__(placeholder=f'Search result {idx + 1} (Players)', options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"You chose: {self.values[0]}")
+        user_choice = interaction.data['values'][0]
+        print('user_choice', user_choice)
+        # await interaction.response.send_message(f"You chose: {user_choice}")
+        if 'Load more results...' in user_choice:
+            pass
+        else:
+            bnet_tag = user_choice.split(' ')[0]
+            player_stats = parse_player_stats(get_player_stats(bnet_tag, 'eu'))
+            await interaction.response.send_message(player_stats)
 
 
 def response_help_message():

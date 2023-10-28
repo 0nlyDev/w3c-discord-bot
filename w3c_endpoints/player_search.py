@@ -41,9 +41,10 @@ def player_search(player_name, last_object_id=None):
         emojified_seasons = ' '.join([emojify_number(s) for s in seasons])
         player_string = f'{bnet_tag} | seasons: {emojified_seasons}'
         players.append(player_string)
-    players.append(f'{EMOJIS["arrows_clockwise"]} Load more results...')
+    if players:
+        players.append(f'{EMOJIS["arrows_clockwise"]} Load more results...')
     print(len(players), players)
     return players
 
 
-player_search('Moon')
+# player_search('Moon')
