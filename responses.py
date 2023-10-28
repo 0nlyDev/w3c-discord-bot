@@ -74,12 +74,13 @@ class PlayerSearchSelect(discord.ui.Select):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
         if 'Load more results...' in user_choice:
+            # return PlayerSearchMenu('Abaddon', self.region, self.game_mode, self.race, self.season)
             pass
         else:
             bnet_tag = user_choice.split(' ')[0]
-            player_stats = parse_player_stats(
-                get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
-            )
+            _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
+            print(_player_stats, '_player_stats')
+            player_stats = parse_player_stats(_player_stats)
             await interaction.response.send_message(player_stats)
 
 
