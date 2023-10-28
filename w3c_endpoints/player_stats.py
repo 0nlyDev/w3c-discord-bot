@@ -31,7 +31,7 @@ def get_race_id(race):
 
 
 def parse_bnet_tag(bnet_tag):
-    return bnet_tag.replace('#', '%23').lower()
+    return bnet_tag.replace('#', '%23')
 
 
 # def find_player_region(bnet_tag):
