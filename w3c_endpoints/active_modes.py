@@ -15,7 +15,7 @@ def active_modes_request():
         if response:
             return json.loads(response.text)
     except Exception as e:
-        print(e)
+        raise e
 
 
 def get_active_modes():

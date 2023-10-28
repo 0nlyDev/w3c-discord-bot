@@ -13,7 +13,7 @@ def season_request():
         if response:
             return json.loads(response.text)
     except Exception as e:
-        print(e)
+        raise e
 
 
 def get_current_season():

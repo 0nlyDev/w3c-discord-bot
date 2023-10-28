@@ -1,6 +1,5 @@
 import json
 import re
-
 import discord
 import responses
 
@@ -11,25 +10,21 @@ async def send_message(message, user_message):
         debugging_mode = False
         if debugging_mode:
             if str(message.guild) != 'SageNoobTesting':
-                await message.channel.send('I am sorry, I am out of service right now. I am currently in development, '
-                                           'being upgraded with more bells and whistles, please check back later.\nIf '
-                                           'you have any questions, reach out to `@SageNoob` via Discord or on '
-                                           'github: https://github.com/0nlyDev/w3c-discord-bot')
+                await message.reply('🔮 Alas, I am temporarily sealed within a magic ward, weaving new spells and '
+                                    'enchantments. The Dark Portal to the realm of W3Champions shall open again soon. '
+                                    'For arcane dilemmas, consult `@SageNoob` in the ethereal chambers of Discord '
+                                    'or traverse the arcane library 📚 of Github: '
+                                    'https://github.com/0nlyDev/w3c-discord-bot.', mention_author=False)
                 return
         try:
-            response = responses.handle_response(user_message)
+            response, view = responses.handle_response(user_message)
             if response:
-                await message.channel.send(response)
+                await message.reply(response, view=view, mention_author=False)
             else:
-                await message.channel.send('I am sorry, something went wrong. Make sure that the player\'s '
-                                           'BattleNetTag and Region are correct or try with fewer optional arguments.'
-                                           '\nUse `!w3c help` or just `!w3c` in chat to see available bot commands and '
-                                           'usage examples. If the issue still persists, reach out to '
-                                           '`@SageNoob` via Discord or on github: '
-                                           'https://github.com/0nlyDev/w3c-discord-bot\nDisclaimer: The w3c bot is '
-                                           'still in beta.')
+                await message.reply('🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.',
+                                    mention_author=False)
         except Exception as e:
-            print(e)
+            raise e
 
 
 def run_discord_bot():

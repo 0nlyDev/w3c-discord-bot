@@ -2,7 +2,7 @@ import json
 import requests
 
 from w3c_endpoints.active_modes import get_game_mode_id
-from w3c_endpoints.seasons import get_current_season
+from w3c_endpoints.player_search import player_search_endpoint
 
 RACES = {
     0: ['rnd', 'random', 'rn'],
@@ -31,12 +31,24 @@ def get_race_id(race):
 
 
 def parse_bnet_tag(bnet_tag):
-    return bnet_tag.replace('#', '%23').lower()
+    return bnet_tag.replace('#', '%23')
 
 
-def get_player_stats(bnet_tag, region, game_mode=None, race=None, season=None):
+# def find_player_region(bnet_tag):
+
+
+def get_player_stats(bnet_tag, region=None, game_mode=None, race=None, season=None):
+    recursion = False
+    if region is None:
+        region = 'eu'
+        print('Guessing region, 1st time.')
+
     if season is None:
-        season = get_current_season()
+        players = player_search_endpoint(bnet_tag)
+        if players and players[0]['seasons']:
+            season = players[0]['seasons'][0]['id']  # get last played season
+        else:
+            return
     try:
         url = f'https://website-backend.w3champions.com/api/players/{parse_bnet_tag(bnet_tag)}/game-mode-stats'
 
@@ -47,28 +59,29 @@ def get_player_stats(bnet_tag, region, game_mode=None, race=None, season=None):
 
         response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
         player_stats = json.loads(response.text)
-
-        selected_stats = []
-        for stats in player_stats:
-            if game_mode:
-                if stats['gameMode'] == get_game_mode_id(game_mode):
+        if not player_stats and region != 'us':
+            recursion = True
+            print('trying to guess region, 2nd time.', bnet_tag)
+            player_stats = get_player_stats(bnet_tag, 'us', game_mode, race, season)
+        if recursion:
+            return player_stats
+        else:
+            selected_stats = []
+            for stats in player_stats:
+                if game_mode:
+                    if stats['gameMode'] == get_game_mode_id(game_mode):
+                        if race:
+                            if stats['race'] == get_race_id(race):
+                                selected_stats.append(stats)
+                        else:
+                            selected_stats.append(stats)
+                else:
                     if race:
                         if stats['race'] == get_race_id(race):
                             selected_stats.append(stats)
                     else:
                         selected_stats.append(stats)
-            else:
-                if race:
-                    if stats['race'] == get_race_id(race):
-                        selected_stats.append(stats)
-                else:
-                    selected_stats.append(stats)
-        if selected_stats:
-            return selected_stats
+            if selected_stats:
+                return selected_stats
     except Exception as e:
-        print(e)
-
-
-# for i in get_player_stats('COLORADO16#11383', 'eu', '2vs2'):
-#     for k, v in i.items():
-#         print(f'{k}: {v}')
+        raise e
