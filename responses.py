@@ -10,42 +10,18 @@ import discord
 with open('assets/emojis.json', 'r', encoding="utf-8") as file:
     EMOJIS = json.load(file)
 
-player_name = None
-
-
-def handle_response(message):
-    bot_command = '!w3c'
-    view = None  # Initialize the view as None
-
-    if message.startswith(bot_command):
-        if bot_command + ' help' == message or bot_command == message:
-            return response_help_message(), view
-        elif bot_command + ' stats ' in message:
-            response = response_stats(message)
-            if isinstance(response, PlayerSearchMenu):
-                view = response
-                if len(view.children) > 0:
-                    return '🌌 From the depths of the Dark Portal, select your champion below:', view
-            return response, view
-        elif bot_command + ' modes' == message:
-            battle_modes = ', '.join([f'`{k}`' for k in get_active_modes().keys()])
-            return f'⚔️ Available battle modes in the World of W3Champions: {battle_modes}', view
-        elif bot_command in message:
-            return response_command_not_found(), view
-
-    return None, None  # If nothing matches, return None for both response and view
-
 
 class PlayerSearchMenu(discord.ui.View):
-    def __init__(self, search_results, region, game_mode, race, season):
+    def __init__(self, player_name, search_results, region, game_mode, race, season):
         super().__init__()
-        self.add_item(PlayerSearchSelect(search_results, region, game_mode, race, season))
+        self.add_item(PlayerSearchSelect(player_name, search_results, region, game_mode, race, season))
 
 
 class PlayerSearchSelect(discord.ui.Select):
-    def __init__(self, search_results, region, game_mode, race, season):  # Now players is a list of <= 25 players
-        self.search_results, self.region, self.game_mode, self.race, self.season = (
-            search_results, region, game_mode, race, season)
+    # Now players is a list of <= 25 players
+    def __init__(self, player_name, search_results, region, game_mode, race, season):
+        self.player_name, self.search_results, self.region, self.game_mode, self.race, self.season = (
+            player_name, search_results, region, game_mode, race, season)
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
         super().__init__(placeholder='Champion manifest from the portal\'s depths:', options=options)
 
@@ -53,11 +29,11 @@ class PlayerSearchSelect(discord.ui.Select):
         user_choice = interaction.data['values'][0]
         print('user_choice', user_choice)
         if '🌀 Summon more champions from the depths...' in user_choice:
-            new_search_results = player_search(player_name, self.search_results[-2])
+            new_search_results = player_search(self.player_name, self.search_results[-2])
             print('self.search_results[-2]', self.search_results[-2])
             if new_search_results:
                 new_menu_select = PlayerSearchMenu(
-                    new_search_results, self.region, self.game_mode, self.race, self.season)
+                    self.player_name, new_search_results, self.region, self.game_mode, self.race, self.season)
                 await interaction.response.send_message('🌌 Through the Dark Portal, more champions emerge!',
                                                         view=new_menu_select)
             else:
@@ -117,34 +93,17 @@ def response_help_message():
     return help_message
 
 
-def response_stats(message):
-    # try:
-    _argument1, _argument2, *remaining_items = message.split(' ')
-    bnet_tag_or_player_name = remaining_items[0] if remaining_items else None
-    region = remaining_items[1] if len(remaining_items) > 1 else None
-    game_mode = remaining_items[2] if len(remaining_items) > 2 else None
-    race = remaining_items[3] if len(remaining_items) > 3 else None
-    season = remaining_items[4] if len(remaining_items) > 4 else None
-
-    print(bnet_tag_or_player_name)
-
-    if '#' in bnet_tag_or_player_name:  # bnet_tag was provided
-        bnet_tag = bnet_tag_or_player_name
+def response_stats(player_name, region=None, game_mode=None, race=None, season=None):
+    if '#' in player_name:  # bnet_tag was provided
+        bnet_tag = player_name
         player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
         return parse_player_stats(player_stats)
-    # elif '@' in bnet_tag_or_player_name:  # get bnet_tag from @mentioned discord user
+    # elif '@' in player_name:  # get bnet_tag from @mentioned discord user
     #     return
     else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
-        global player_name
-        player_name = bnet_tag_or_player_name
         search_results = player_search(player_name)
         if search_results:
-            return PlayerSearchMenu(search_results, region, game_mode, race, season)
-
-
-def response_command_not_found():
-    return ('🔮 The spirits do not recognize this spell... Use `!w3c help` or simply `!w3c` to seek guidance on the '
-            'ancient commands. 🔮')
+            return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season)
 
 
 def split_list(input_list, max_size=25):
@@ -164,3 +123,7 @@ def split_stats_in_chunks_of_2k_chars(stats, delimiter='\n\n', max_length=2000):
             char_counter = len(stat) + len(delimiter)
     if current_chunk:  # handle any remaining stats
         yield delimiter.join(current_chunk)
+
+
+def response_modes():
+    return ', '.join([f'`{k}`' for k in get_active_modes().keys()])
