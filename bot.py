@@ -9,15 +9,25 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
 debugging_mode = True
-debugging_guild = 'SageNoobTesting'
-debugging_message = ('🔮 Alas, I am temporarily sealed within a magic ward, weaving new spells and '
-                     'enchantments. The Dark Portal to the realm of W3Champions shall open again soon. '
-                     'For arcane dilemmas, consult `@SageNoob` in the ethereal chambers of Discord '
-                     'or traverse the arcane library 📚 of Github: '
-                     'https://github.com/0nlyDev/w3c-discord-bot.')
+
+
+def debugging_check(func):
+    async def wrapper(interaction, *args, **kwargs):
+        if debugging_mode and str(interaction.guild) != 'SageNoobTesting':
+            debugging_message = ('🔮 Alas, I am temporarily sealed within a magic ward, weaving new spells and '
+                                 'enchantments. The Dark Portal to the realm of W3Champions shall open again soon. '
+                                 'For arcane dilemmas, consult `@SageNoob` in the ethereal chambers of Discord '
+                                 'or traverse the arcane library 📚 of Github: '
+                                 'https://github.com/0nlyDev/w3c-discord-bot.')
+            await interaction.response.send_message(debugging_message)
+            return
+        await func(interaction, *args, **kwargs)
+
+    return wrapper
 
 
 # Help Command
+# @debugging_check
 @tree.command(name="help", description="Get help with the bot's commands")
 async def _help(interaction):
     help_message = responses.response_help_message()
