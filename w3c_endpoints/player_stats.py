@@ -87,4 +87,4 @@ def get_player_stats(bnet_tag, region=None, game_mode=None, race=None, season=No
         raise e
 
 
-print(get_player_stats('happy#2384'))
+# print(get_player_stats('happy#2384'))
