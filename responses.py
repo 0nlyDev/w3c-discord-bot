@@ -43,17 +43,18 @@ class PlayerSearchSelect(discord.ui.Select):
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
-            parsed_player_stats = parse_player_stats(_player_stats)
+            parsed_player_stats, view = parse_player_stats(_player_stats, bnet_tag)
 
-            # split messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
-            delimiter = '\n\n'
-            stats_in_chunks = list(split_stats_in_chunks_of_2k_chars(
-                parsed_player_stats.split(delimiter), delimiter))
-            # Send the first chunk using the response
-            await interaction.response.send_message(stats_in_chunks[0])
-            # Send subsequent chunks as follow-ups
-            for player_stats in stats_in_chunks[1:]:
-                await interaction.followup.send(content=player_stats)
+            # # split messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
+            # delimiter = '\n\n'
+            # stats_in_chunks = list(split_stats_in_chunks_of_2k_chars(
+            #     parsed_player_stats.split(delimiter), delimiter))
+            # # Send the first chunk using the response
+            # await interaction.response.send_message(stats_in_chunks[0])
+            # # Send subsequent chunks as follow-ups
+            # for player_stats in stats_in_chunks[1:]:
+            #     await interaction.followup.send(content=player_stats)
+            await interaction.response.send_message(embed=parsed_player_stats, view=view)
 
 
 def response_help_message():
@@ -97,7 +98,7 @@ def response_stats(player_name, region=None, game_mode=None, race=None, season=N
     if '#' in player_name:  # bnet_tag was provided
         bnet_tag = player_name
         player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-        return parse_player_stats(player_stats)
+        return parse_player_stats(player_stats, bnet_tag)
     # elif '@' in player_name:  # get bnet_tag from @mentioned discord user
     #     return
     else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
