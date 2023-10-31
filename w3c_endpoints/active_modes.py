@@ -37,10 +37,10 @@ def get_game_mode_id(mode_name):
         return active_game_modes_lowercase[mode_name.lower()]
 
 
-def get_game_mode_from_id(id):
+def get_game_mode_from_id(game_mode_id):
     active_game_modes = get_active_modes()
     for k, v in active_game_modes.items():
-        if id == v:
+        if game_mode_id == v:
             return k
 
 # print(get_game_mode_from_id(1))
