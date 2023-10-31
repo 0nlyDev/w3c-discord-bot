@@ -45,9 +45,12 @@ async def _stats(
         season: str = None
 ):
     response = responses.response_stats(player_name, region, game_mode, race, season)
-    if response and len(response.children) > 0:
-        await interaction.response.send_message(
-            '🌌 From the depths of the Dark Portal, select your champion below:', view=response)
+    if response:
+        if hasattr(response, 'children') and len(response.children) > 0:  # player_name
+            await interaction.response.send_message(
+                '🌌 From the depths of the Dark Portal, select your champion below:', view=response)
+        elif not hasattr(response, 'children'):  # stats directly from bnet_tag
+            await interaction.response.send_message(response)
     else:
         await interaction.response.send_message(
             "🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.")
