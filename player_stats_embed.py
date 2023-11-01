@@ -38,6 +38,22 @@ class MultiSelectMenu(View):
                             game_mode_values.add(game_mode)
             self.add_item(Select(placeholder='Choose game mode...', options=game_modes, custom_id="game_modes_menu"))
 
+    def get_default_season(self):
+        for item in self.children:
+            if item.custom_id == "seasons_menu":
+                for option in item.options:
+                    if getattr(option, "default", False):
+                        return int(option.value)
+        return None
+
+    def get_default_game_mode(self):
+        for item in self.children:
+            if item.custom_id == "game_modes_menu":
+                for option in item.options:
+                    if getattr(option, "default", False):
+                        return option.value
+        return None
+
 
 def get_player_stats_embed(player_stats, bnet_tag):
     if not player_stats:
@@ -45,7 +61,16 @@ def get_player_stats_embed(player_stats, bnet_tag):
 
     embed = Embed(title="🛡️ Champion Stats 🛡️", color=0x3498db)
 
-    for player_stat in player_stats:
+    # Create the view and get default values
+    view = MultiSelectMenu(player_stats, bnet_tag)
+    default_season = view.get_default_season()
+    default_game_mode = view.get_default_game_mode()
+
+    # Retrieve the specific stat based on the default values
+    player_stat = next((stat for stat in player_stats if stat["season"] == default_season and
+                        get_game_mode_from_id(stat["gameMode"]) == default_game_mode), None)
+
+    if player_stat:
         game_mode = get_game_mode_from_id(player_stat["gameMode"])
         if game_mode is None:
             game_mode = str(game_mode)
@@ -65,9 +90,8 @@ def get_player_stats_embed(player_stats, bnet_tag):
         field_value += f"Games: {player_stat['games']}"
 
         embed.add_field(name=field_name, value=field_value, inline=False)
-        break  # print only first occurrence
 
-    return embed, MultiSelectMenu(player_stats, bnet_tag)
+    return embed, view
 
 
 def convert_win_rate_to_percentage(num):
