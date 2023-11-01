@@ -1,6 +1,6 @@
 import json
 
-from parse_player_stats import parse_player_stats
+from player_stats_embed import get_player_stats_embed
 from w3c_endpoints.player_stats import get_player_stats
 from w3c_endpoints.active_modes import get_active_modes
 from w3c_endpoints.player_search import player_search
@@ -43,31 +43,24 @@ class PlayerSearchSelect(discord.ui.Select):
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
-            parsed_player_stats, view = parse_player_stats(_player_stats, bnet_tag)
-
-            # # split messages in chunks no longer than 2k to ensure we go around discords 2k chars limitation
-            # delimiter = '\n\n'
-            # stats_in_chunks = list(split_stats_in_chunks_of_2k_chars(
-            #     parsed_player_stats.split(delimiter), delimiter))
-            # # Send the first chunk using the response
-            # await interaction.response.send_message(stats_in_chunks[0])
-            # # Send subsequent chunks as follow-ups
-            # for player_stats in stats_in_chunks[1:]:
-            #     await interaction.followup.send(content=player_stats)
-            await interaction.response.send_message(embed=parsed_player_stats, view=view)
+            player_stats_embed, view = get_player_stats_embed(_player_stats, bnet_tag)
+            if view:
+                await interaction.response.send_message(embed=player_stats_embed, view=view)
+            else:
+                await interaction.response.send_message(embed=player_stats_embed)
 
 
 def response_help_message():
     help_message = ('🔥 **W3C Bot Commands to reveal the World of W3Champions** 🔥:\n'
-                    
+
                     '🔎 **Seek champions by player name to reveal their legendary stats** 🔎\n'
                     '\tBy Elune: `!w3c stats <PlayerName>`\n'
                     '\te.g. `!w3c stats Moon`\n'
-                    
+
                     '🌌 **Conjure legendary stats by Battle Tag** 🌌⚡:\n'
                     '\tCommand the spirits: `!w3c stats <BattleNetTag>`\n'
                     '\te.g. `!w3c stats happy#2384`\n'
-                    
+
                     '⚡ **Harness the power of runes (Optional Arguments)** ⚡:\n'
                     '\tAdd arguments: `<Region/GameMode>`, `<Race>`, `<Season>`\n'
                     '\t⚠️ Arguments order must be obeyed (for the time being)!: '
@@ -76,14 +69,14 @@ def response_help_message():
                     '\tOr if you know their Battle Tag, whisper in this order: '
                     '`!w3c stats <BattleNetTag> <Region> <GameMode> <Race> <Season>`\n'
                     '\te.g. `!w3c stats happy#2384 eu 1vs1 ud 16`\n'
-                    
+
                     '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
                     '\tAncient words: `!w3c modes`\n'
                     '\tReveals: `1vs1`, `2vs2`, `4vs4`, `FFA`, etc.\n'
-                    
+
                     '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
                     '\tSpeak thusly: `!w3c help` or simply whisper `!w3c` to hear this tale again.\n'
-                    
+
                     '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
                     'Winds of magic can be unpredictable. Should you encounter misplaced enchantments or if the bot '
                     'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
@@ -98,7 +91,7 @@ def response_stats(player_name, region=None, game_mode=None, race=None, season=N
     if '#' in player_name:  # bnet_tag was provided
         bnet_tag = player_name
         player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-        return parse_player_stats(player_stats, bnet_tag)
+        return get_player_stats_embed(player_stats, bnet_tag)
     # elif '@' in player_name:  # get bnet_tag from @mentioned discord user
     #     return
     else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu

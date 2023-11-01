@@ -39,9 +39,9 @@ class MultiSelectMenu(View):
             self.add_item(Select(placeholder='Choose game mode...', options=game_modes, custom_id="game_modes_menu"))
 
 
-def parse_player_stats(player_stats, bnet_tag):
+def get_player_stats_embed(player_stats, bnet_tag):
     if not player_stats:
-        return Embed(description='🌌 The Dark Portal\'s manifest reveals no stats for this champion.')
+        return Embed(description='🌌 The Dark Portal\'s manifest reveals no stats for this champion.'), None
 
     embed = Embed(title="🛡️ Champion Stats 🛡️", color=0x3498db)
 
