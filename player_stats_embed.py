@@ -1,42 +1,90 @@
-from discord import Embed, SelectOption, SelectMenu
+import discord
+from discord import Embed, SelectOption, SelectMenu, Interaction
 
 from w3c_endpoints.player_stats import RACES
 from w3c_endpoints.active_modes import get_game_mode_from_id
 from w3c_endpoints.player import get_player_participated_in_seasons
 from w3c_endpoints.player_search import emojify_number
+from w3c_endpoints.player_stats import get_player_stats
 
 from discord.ui import Select, View
+
+def get_game_modes_for_season(bnet_tag, selected_season):
+    new_player_stats = get_player_stats(bnet_tag, season=selected_season)
+    print('new_player_stats', new_player_stats)
+    game_modes_in_season = []
+    for stats in new_player_stats:
+        print(f"Checking stats: {stats}")
+        if stats['season'] == int(selected_season):
+            game_mode = get_game_mode_from_id(stats['gameMode'])
+            print(f"Found game mode: {game_mode}")
+            if game_mode not in game_modes_in_season:
+                game_modes_in_season.append(game_mode)
+                print(f"Added game mode to list: {game_mode}")
+    print('game_modes_in_season', game_modes_in_season)
+    return game_modes_in_season
+
+
+class SeasonsSelectMenu(Select):
+    def __init__(self, bnet_tag, player_stats, participated_in_seasons, children):
+        self.bnet_tag, self.player_stats, self.participated_in_seasons, self.children = (
+            bnet_tag, player_stats, participated_in_seasons, children)
+        self.last_selected_season = None
+        super().__init__(placeholder='Choose season...', options=participated_in_seasons, custom_id="seasons_menu")
+
+    async def callback(self, interaction: discord.Interaction):
+        selected_season = interaction.data['values'][0]
+        self.last_selected_season = selected_season
+        print('selected_season', selected_season)
+
+        # Fetch new game modes based on the selected season
+        new_game_modes = get_game_modes_for_season(self.bnet_tag, selected_season)
+
+        # Update the Select component for game modes
+        game_mode_select = next((child for child in self.children if child.custom_id == "game_modes_menu"), None)
+        if game_mode_select:
+            game_mode_select.options = [SelectOption(label=mode, value=mode) for mode in new_game_modes]
+            if new_game_modes:
+                game_mode_select.options[0].default = True
+                for option in self.options:
+                    if option.value == self.last_selected_season:
+                        option.default = True
+                    else:
+                        option.default = False
+                await interaction.response.edit_message(view=self.view)
+
+
+class GameModesSelect(Select):
+    def __init__(self, player_stats, participated_in_seasons):
+        game_modes = []
+        game_mode_values = set()
+        default_season = next((option.value for option in participated_in_seasons
+                               if getattr(option, "default", False)), None)
+        default_is_set = False
+        for i in player_stats:
+            for k, v in i.items():
+                if k == 'gameMode':
+                    game_mode = get_game_mode_from_id(v)
+                    option = SelectOption(label=game_mode, value=game_mode)
+                    if default_season and i['season'] == int(default_season) and not default_is_set:
+                        option.default = default_is_set = True
+                    if game_mode not in game_mode_values:
+                        game_modes.append(option)
+                        game_mode_values.add(game_mode)
+
+        super().__init__(placeholder='Choose game mode...', options=game_modes, custom_id="game_modes_menu")
 
 
 class MultiSelectMenu(View):
     def __init__(self, player_stats, bnet_tag):
+        self.player_stats = player_stats
         super().__init__()
-
-        # Seasons menu
         participated_in_seasons = [SelectOption(label=str(emojify_number(s)), value=str(s))
                                    for s in get_player_participated_in_seasons(bnet_tag)]
-        if participated_in_seasons:
-            participated_in_seasons[0].default = True
-            self.add_item(Select(placeholder='Choose season...', options=participated_in_seasons,
-                                 custom_id="seasons_menu"))
+        participated_in_seasons[0].default = True
 
-            # Game modes menu
-            game_modes = []
-            game_mode_values = set()
-            default_season = next((option.value for option in participated_in_seasons
-                                   if getattr(option, "default", False)), None)
-            default_is_set = False
-            for i in player_stats:
-                for k, v in i.items():
-                    if k == 'gameMode':
-                        game_mode = str(get_game_mode_from_id(v))
-                        option = SelectOption(label=game_mode, value=game_mode)
-                        if default_season and i['season'] == int(default_season) and not default_is_set:
-                            option.default = default_is_set = True
-                        if game_mode not in game_mode_values:
-                            game_modes.append(option)
-                            game_mode_values.add(game_mode)
-            self.add_item(Select(placeholder='Choose game mode...', options=game_modes, custom_id="game_modes_menu"))
+        self.add_item(GameModesSelect(player_stats, participated_in_seasons))
+        self.add_item(SeasonsSelectMenu(bnet_tag, player_stats, participated_in_seasons, self.children))
 
     def get_default_season(self):
         for item in self.children:
