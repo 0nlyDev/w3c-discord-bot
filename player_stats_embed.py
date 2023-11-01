@@ -1,5 +1,5 @@
-import discord
-from discord import Embed, SelectOption, SelectMenu, Interaction
+from discord import Embed, SelectOption, Interaction
+from discord.ui import Select, View
 
 from w3c_endpoints.player_stats import RACES
 from w3c_endpoints.active_modes import get_game_mode_from_id
@@ -7,7 +7,6 @@ from w3c_endpoints.player import get_player_participated_in_seasons
 from w3c_endpoints.player_search import emojify_number
 from w3c_endpoints.player_stats import get_player_stats
 
-from discord.ui import Select, View
 
 def get_game_modes_for_season(bnet_tag, selected_season):
     new_player_stats = get_player_stats(bnet_tag, season=selected_season)
@@ -32,7 +31,7 @@ class SeasonsSelectMenu(Select):
         self.last_selected_season = None
         super().__init__(placeholder='Choose season...', options=participated_in_seasons, custom_id="seasons_menu")
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: Interaction):
         selected_season = interaction.data['values'][0]
         self.last_selected_season = selected_season
         print('selected_season', selected_season)
