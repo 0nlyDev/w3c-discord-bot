@@ -45,7 +45,7 @@ class SeasonsSelectMenu(Select):
             game_mode_select.options = [SelectOption(label=mode, value=mode) for mode in new_game_modes]
             if new_game_modes:
                 game_mode_select.options[0].default = True
-                for option in self.options:
+                for option in self.options:  # update the season select menu with the user choice
                     if option.value == self.last_selected_season:
                         option.default = True
                     else:
@@ -57,7 +57,7 @@ class GameModesSelect(Select):
     def __init__(self, player_stats, participated_in_seasons):
         game_modes = []
         game_mode_values = set()
-        default_season = next((option.value for option in participated_in_seasons
+        default_season = next((int(option.value) for option in participated_in_seasons
                                if getattr(option, "default", False)), None)
         default_is_set = False
         for i in player_stats:
@@ -65,7 +65,7 @@ class GameModesSelect(Select):
                 if k == 'gameMode':
                     game_mode = get_game_mode_from_id(v)
                     option = SelectOption(label=game_mode, value=game_mode)
-                    if default_season and i['season'] == int(default_season) and not default_is_set:
+                    if default_season and i['season'] == default_season and not default_is_set:
                         option.default = default_is_set = True
                     if game_mode not in game_mode_values:
                         game_modes.append(option)
