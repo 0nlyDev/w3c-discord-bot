@@ -35,19 +35,19 @@ class PlayerSearchSelect(discord.ui.Select):
                 new_menu_select = PlayerSearchMenu(
                     self.player_name, new_search_results, self.region, self.game_mode, self.race, self.season)
                 await interaction.response.send_message('🌌 Through the Dark Portal, more champions emerge!',
-                                                        view=new_menu_select)
+                                                        view=new_menu_select, ephemeral=True)
             else:
                 await interaction.response.send_message('🌌 By the Light! It seems like we\'ve reached the end of our '
                                                         'journey! No more champions emerge from the Dark Portal. Try '
-                                                        'with a different name...')
+                                                        'with a different name...', ephemeral=True)
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
             player_stats_embed, view = get_player_stats_embed(_player_stats, bnet_tag)
             if view:
-                await interaction.response.send_message(embed=player_stats_embed, view=view)
+                await interaction.response.send_message(embed=player_stats_embed, view=view, ephemeral=True)
             else:
-                await interaction.response.send_message(embed=player_stats_embed)
+                await interaction.response.send_message(embed=player_stats_embed, ephemeral=True)
 
 
 def response_help_message():

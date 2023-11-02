@@ -19,7 +19,7 @@ def debugging_check(func):
                                  'For arcane dilemmas, consult `@SageNoob` in the ethereal chambers of Discord '
                                  'or traverse the arcane library 📚 of Github: '
                                  'https://github.com/0nlyDev/w3c-discord-bot.')
-            await interaction.response.send_message(debugging_message)
+            await interaction.response.send_message(debugging_message, ephemeral=True)
             return
         await func(interaction, *args, **kwargs)
 
@@ -31,7 +31,7 @@ def debugging_check(func):
 @tree.command(name="help", description="Get help with the bot's commands")
 async def _help(interaction):
     help_message = responses.response_help_message()
-    await interaction.response.send_message(help_message)
+    await interaction.response.send_message(help_message, ephemeral=True)
 
 
 # Player Stats Command
@@ -48,9 +48,9 @@ async def _stats(
     if response:
         if hasattr(response, 'children') and len(response.children) > 0:  # player_name
             await interaction.response.send_message(
-                '🌌 From the depths of the Dark Portal, select your champion below:', view=response)
+                '🌌 From the depths of the Dark Portal, select your champion below:', view=response, ephemeral=True)
         elif not hasattr(response, 'children'):  # stats directly from bnet_tag
-            await interaction.response.send_message(response)
+            await interaction.response.send_message(response, ephemeral=True)
     else:
         await interaction.response.send_message(
             "🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.")
@@ -60,7 +60,7 @@ async def _stats(
 @tree.command(name="battle_modes", description="Discover all the available battle modes")
 async def _modes(interaction):
     modes_message = responses.response_modes()
-    await interaction.response.send_message(modes_message)
+    await interaction.response.send_message(modes_message, ephemeral=True)
 
 
 # Event to sync commands and print ready message
