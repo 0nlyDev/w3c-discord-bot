@@ -18,13 +18,15 @@ class PlayerSearchMenu(discord.ui.View):
 
 
 class PlayerSearchSelect(discord.ui.Select):
-    # Now players is a list of <= 25 players
     def __init__(self, player_name, search_results, region, game_mode, race, season):
         self.player_name, self.search_results, self.region, self.game_mode, self.race, self.season = (
             player_name, search_results, region, game_mode, race, season)
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
         self.load_more_results_string = '🌀 Summon more champions from the depths...'
-        if len(options) == 20:
+        if len(options) > 0:
+            # w3c playerSearch endpoint is not reliable - sometimes returns less than 20 players
+            # when there are still more results to be shown. So we keep it if > 0 because we are not sure when is the
+            # end of the search, and we will relay on the result to determine end of search.
             options.append(discord.SelectOption(label=self.load_more_results_string,
                                                 value=self.load_more_results_string))
         super().__init__(placeholder='Champion manifest from the portal\'s depths:', options=options)
@@ -32,7 +34,8 @@ class PlayerSearchSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         user_choice = interaction.data['values'][0]
         if self.load_more_results_string == user_choice:
-            new_search_results = player_search(self.player_name, self.search_results[-2])
+            last_bnet_tag = next(i for i in reversed(self.search_results) if i != self.load_more_results_string)
+            new_search_results = player_search(self.player_name, last_bnet_tag)
             print('self.search_results[-2]', self.search_results[-2])
             if new_search_results:
                 new_menu_select = PlayerSearchMenu(
