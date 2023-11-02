@@ -41,9 +41,8 @@ def player_search(player_name, last_object_id=None):
         emojified_seasons = ' '.join([emojify_number(s) for s in seasons])
         player_string = f'{bnet_tag} | seasons: {emojified_seasons}'
         players.append(player_string)
-    if players:
-        players.append('🌀 Summon more champions from the depths...')
-    print(len(players), players)
+    # if players:
+    #     players.append('🌀 Summon more champions from the depths...')
     return players
 
 
