@@ -45,12 +45,6 @@ async def _stats(
         season: str = None
 ):
     response, view = responses.response_stats(player_name, region, game_mode, race, season)
-    # if isinstance(tuple, type(returned_response)):
-    #     response = returned_response[0]
-    #     view = returned_response[1]
-    # else:
-    #     response = returned_response
-    #     view = None
     if response:
         if hasattr(response, 'children') and len(response.children) > 0:  # player_name
             await interaction.response.send_message(
@@ -63,7 +57,7 @@ async def _stats(
                 await interaction.response.send_message(embed=response, ephemeral=True)
     else:
         await interaction.response.send_message(
-            "🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.")
+            "🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.", ephemeral=True)
 
 
 # Battle Modes Command
