@@ -95,13 +95,14 @@ def response_help_message():
 
 def response_stats(player_name, region=None, game_mode=None, race=None, season=None):
     search_results = player_search(player_name)
-    if search_results and len(search_results) == 1:
-        bnet_tag = search_results[0].split(' ')[0]
-        player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-        print('player_stats', player_stats)
-        return get_player_stats_embed(player_stats, bnet_tag)
-    else:
-        return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
+    if search_results:
+        if len(search_results) == 1:
+            bnet_tag = search_results[0].split(' ')[0]
+            player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
+            return get_player_stats_embed(player_stats, bnet_tag)
+        else:
+            return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
+    return None, None
 
 
 def split_list(input_list, max_size=25):
