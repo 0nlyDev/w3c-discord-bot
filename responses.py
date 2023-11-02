@@ -94,21 +94,14 @@ def response_help_message():
 
 
 def response_stats(player_name, region=None, game_mode=None, race=None, season=None):
-    if '#' in player_name:  # bnet_tag was provided
-        bnet_tag = player_name
+    search_results = player_search(player_name)
+    if search_results and len(search_results) == 1:
+        bnet_tag = search_results[0].split(' ')[0]
         player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
+        print('player_stats', player_stats)
         return get_player_stats_embed(player_stats, bnet_tag)
-    # elif '@' in player_name:  # get bnet_tag from @mentioned discord user
-    #     return
-    else:  # get bnet_tag by searching w3c for player name and listing the results in a SelectMenu
-        search_results = player_search(player_name)
-        if search_results and len(search_results) == 1:
-            bnet_tag = search_results[0].split(' ')[0]
-            player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
-            print('wha play sta', player_stats)
-            return get_player_stats_embed(player_stats, bnet_tag)
-        else:
-            return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
+    else:
+        return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
 
 
 def split_list(input_list, max_size=25):
