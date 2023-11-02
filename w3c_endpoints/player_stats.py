@@ -85,6 +85,3 @@ def get_player_stats(bnet_tag, region=None, game_mode=None, race=None, season=No
                 return selected_stats
     except Exception as e:
         raise e
-
-
-# print(get_player_stats('happy#2384'))
