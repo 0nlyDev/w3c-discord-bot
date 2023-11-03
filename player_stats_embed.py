@@ -70,7 +70,7 @@ class GameModesSelect(Select):
     async def callback(self, interaction: Interaction):
         # Update the game mode select menu with the user choice
         selected_game_mode = interaction.data['values'][0]
-        for option in self.options:  
+        for option in self.options:
             if option.value == selected_game_mode:
                 option.default = True
             else:
@@ -113,8 +113,6 @@ def get_player_stats_embed(player_stats, bnet_tag, view=None):
     if not player_stats:
         return Embed(description='🌌 The Dark Portal\'s manifest reveals no stats for this champion.'), None
 
-    embed = Embed(title='🛡️ Champion Stats 🛡️', color=0x3498db)
-
     # Create the view and get default values
     if view is None:
         view = MultiSelectMenu(player_stats, bnet_tag)
@@ -122,31 +120,40 @@ def get_player_stats_embed(player_stats, bnet_tag, view=None):
     default_game_mode = view.get_default_game_mode()
 
     # Retrieve the specific stat based on the default values
-    player_stat = next((stat for stat in player_stats if stat['season'] == default_season and
-                        get_game_mode_from_id(stat['gameMode']) == default_game_mode), None)
+    if player_stats:
+        title = f'🛡️ W3Champion {bnet_tag} 🛡️'
+        description = f'### ⚔️️ {default_game_mode} ⚔️'
+        color = 7419530  # DarkPurple
+        url = f'https://www.w3champions.com/player/{bnet_tag.replace("#", "%23")}'
+        embed = Embed(title=title, description=description, color=color, url=url)
 
-    if player_stat:
-        game_mode = get_game_mode_from_id(player_stat['gameMode'])
-        if game_mode is None:
-            game_mode = str(game_mode)
-        _name = 'player'
-        if '1vs1' not in game_mode:
-            _name = 'players'
-        players = ', '.join([i['name'] for i in player_stat['playerIds']])
-
-        field_name = f'Mode: {game_mode} | {_name}: {players}'
-        if player_stat['race']:
-            field_name += f' | Race: {RACES[player_stat["race"]][1]}'
-
-        field_value = f'Season: {player_stat["season"]}\n'
-        field_value += f'MMR: {player_stat["mmr"]}\n'
-        field_value += f'Win Rate: {convert_win_rate_to_percentage(player_stat["winrate"])}\n'
-        field_value += f'W/L: {player_stat["wins"]}:{player_stat["losses"]}\n'
-        field_value += f'Games: {player_stat["games"]}'
-
-        embed.add_field(name=field_name, value=field_value, inline=False)
-
-    return embed, view
+        field_counter = 0
+        for player_stat in player_stats:
+            game_mode = get_game_mode_from_id(player_stat['gameMode'])
+            if player_stat['season'] == default_season and game_mode == default_game_mode:
+                field_counter += 1
+                if player_stat['race'] is not None:
+                    field_name = RACES[player_stat['race']][1].capitalize()
+                else:
+                    player_s = 'Player'
+                    if len(player_stat['playerIds']) > 1:
+                        player_s = 'Players'
+                    players = ', '.join([i['name'] for i in player_stat['playerIds']])
+                    field_name = f'{player_s}: `{players}`'
+                field_name += '\n'
+                field_value = f'MMR: `{player_stat["mmr"]}`\n'
+                field_value += f'Win Rate: `{convert_win_rate_to_percentage(player_stat["winrate"])}`\n'
+                field_value += f'W/L: `{player_stat["wins"]}:{player_stat["losses"]}`\n'
+                field_value += f'Games: `{player_stat["games"]}`'
+                embed.add_field(name=field_name, value=field_value, inline=True)
+        if field_counter >= 5 and (field_counter - 5) % 3 == 0:  # fix embed formatting, pattern: n+3 if n >= 5
+            embed.add_field(name='', value='', inline=True)
+        embed.add_field(name=f'\nSEASON: {emojify_number(default_season)}', value='', inline=False)
+        embed.add_field(name='', value='', inline=False)
+        embed.add_field(name='', value='[GitHub](https://github.com/0nlyDev/w3c-discord-bot)', inline=False)
+        footer_text = 'To reveal these stats to others, simply react with the 👁️ emoji.'
+        embed.set_footer(text=footer_text)
+        return embed, view
 
 
 def convert_win_rate_to_percentage(num):
