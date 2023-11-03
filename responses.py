@@ -37,15 +37,17 @@ class PlayerSearchSelect(discord.ui.Select):
             last_bnet_tag = next(i for i in reversed(self.search_results) if i != self.load_more_results_string)
             new_search_results = player_search(self.player_name, last_bnet_tag)
             print('self.search_results[-2]', self.search_results[-2])
-            if new_search_results:
+            if isinstance(new_search_results, list) and new_search_results:
                 new_menu_select = PlayerSearchMenu(
                     self.player_name, new_search_results, self.region, self.game_mode, self.race, self.season)
                 await interaction.response.send_message('🌌 Through the Dark Portal, more champions emerge!',
                                                         view=new_menu_select, ephemeral=True)
-            else:
+            elif isinstance(new_search_results, list):
                 await interaction.response.send_message('🌌 By the Light! It seems like we\'ve reached the end of our '
                                                         'journey! No more champions emerge from the Dark Portal. Try '
                                                         'with a different Champion name...', ephemeral=True)
+            else:
+                await interaction.response.send_message(new_search_results, ephemeral=True)
         else:
             bnet_tag = user_choice.split(' ')[0]
             _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
