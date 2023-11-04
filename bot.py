@@ -1,7 +1,4 @@
-import asyncio
 import json
-
-import aiohttp
 import discord
 from discord import app_commands
 import responses
@@ -80,12 +77,7 @@ def run_discord_bot():
     with open('./configs/config.json', 'r') as file:
         data = json.load(file)
     token = data["token"]
-    while True:  # Infinite loop to keep trying to connect
-        try:
-            client.run(token)
-        except aiohttp.ClientConnectorError:
-            print("Failed to connect to Discord Gateway. Retrying in 5 seconds...")
-            asyncio.sleep(5)  # Wait for 5 seconds before retrying
+    client.run(token)
 
 
 if __name__ == "__main__":
