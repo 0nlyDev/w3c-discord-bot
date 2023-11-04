@@ -28,6 +28,7 @@ def get_active_modes():
     #     return active_game_modes
     return {'1vs1': 1, '2vs2': 2, '4vs4': 4, 'FFA': 5, 'LegionTD1v1': 203, 'LegionTD4v4': 202, 'RoC1vs1': 301,
             'AllTheRandoms1vs1': 601, 'SurvivalChaos': 1001, 'LineTowerWarsFFA': 402, 'PTR1vs1': 801}
+    # TODO invert the dict so that the ID is the key
 
 
 def get_game_mode_id(mode_name):
@@ -37,10 +38,11 @@ def get_game_mode_id(mode_name):
         return active_game_modes_lowercase[mode_name.lower()]
 
 
-def get_game_mode_from_id(id):
+def get_game_mode_from_id(game_mode_id):
     active_game_modes = get_active_modes()
     for k, v in active_game_modes.items():
-        if id == v:
+        if game_mode_id == v:
             return k
+    return f'gameModeID: {str(game_mode_id)}'
 
 # print(get_game_mode_from_id(1))
