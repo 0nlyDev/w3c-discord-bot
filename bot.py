@@ -49,7 +49,6 @@ async def _stats(
         if hasattr(response, 'children') and len(response.children) > 0:  # player_name
             await interaction.response.send_message(
                 '🌌 From the depths of the Dark Portal, select your champion below:', view=response, ephemeral=True)
-        # elif not hasattr(response, 'children'):  # stats directly from bnet_tag
         else:
             if view:
                 await interaction.response.send_message(embed=response, view=view, ephemeral=True)

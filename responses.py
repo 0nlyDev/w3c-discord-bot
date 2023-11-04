@@ -61,7 +61,7 @@ class PlayerSearchSelect(discord.ui.Select):
 def response_help_message():
     help_message = (
         '🔥 **W3C Bot Slash Commands to reveal the World of W3Champions** 🔥:\n\n'
-        
+
         '🔎 **Seek champions by Name or Battle Tag to reveal their legendary stats** 🔎:\n'
         'To initiate a search, use the `/player_stats_by_game_mode` command followed by the '
         'player\'s name or Battle Tag.\n'
@@ -69,20 +69,20 @@ def response_help_message():
         'Select from the available options or type the player\'s name or Battle Tag to initiate a search.\n'
         'If more champions are available, you can load additional results by selecting '
         'the "🌀 Summon more champions from the depths..." option from the dropdown menu.\n\n'
-        
+
         '⚡ **Refine your search with Optional Arguments** ⚡:\n'
         'You can refine your search by adding optional arguments such as `[Region]`, `[GameMode]`, '
         '`[Race]`, and `[Season]` to the `/player_stats_by_game_mode` command. These arguments can be '
         'provided in any order:\n'
         '`/player_stats_by_game_mode <PlayerName/BattleNetTag> [Region] [GameMode] [Race] [Season]`\n'
         'e.g., `/player_stats_by_game_mode Moon eu ffa` or `/player_stats_by_game_mode happy#2384 1vs1 ud 16`\n\n'
-        
+
         '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
         'Use the `/battle_modes` command to reveal all available battle modes.\n\n'
-        
+
         '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
         'To access this help message again, simply use the `/help` command.\n\n'
-        
+
         '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
         'Winds of magic can be unpredictable... Should you encounter misplaced enchantments or if the bot '
         'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
@@ -103,25 +103,6 @@ def response_stats(player_name, region=None, game_mode=None, race=None, season=N
         else:
             return PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
     return None, None
-
-
-def split_list(input_list, max_size=25):
-    return [input_list[i:i + max_size] for i in range(0, len(input_list), max_size)]
-
-
-def split_stats_in_chunks_of_2k_chars(stats, delimiter='\n\n', max_length=2000):
-    current_chunk = []
-    char_counter = 0
-    for stat in stats:
-        if char_counter + len(stat) + len(delimiter) <= max_length:
-            current_chunk.append(stat)
-            char_counter += len(stat) + len(delimiter)
-        else:
-            yield delimiter.join(current_chunk)
-            current_chunk = [stat]
-            char_counter = len(stat) + len(delimiter)
-    if current_chunk:  # handle any remaining stats
-        yield delimiter.join(current_chunk)
 
 
 def response_modes():
