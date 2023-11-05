@@ -1,6 +1,6 @@
 # W3C Discord Bot
 
-![w3c_discord_bot.png](assets%2Fw3c_discord_bot.png)
+![w3c_discord_bot.png](https://github.com/0nlyDev/w3c-discord-bot/blob/main/assets/images/w3c_discord_bot.png)
 
 **w3c-discord-bot** is an open-source project that's currently in active development. It aims to provide various statistics from [W3Champions](https://www.w3champions.com/) as bot commands for Discord. If you're interested in contributing, you are more than welcome!
 
