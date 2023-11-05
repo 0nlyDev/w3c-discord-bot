@@ -33,9 +33,3 @@ To use the bot, simply type in one of the following commands:
 To invite the bot to your Discord server, use the following link:
 [Invite W3C Bot](https://discord.com/api/oauth2/authorize?client_id=1166203153654501406&permissions=826781222912&scope=bot)
 
-**NOTE**: Currently, the bot is hosted on the developer's PC, so uptime may not be ideal. 
-The page will be updated once the bot is hosted on a more stable server. 
-Alternatively, you can clone this repository and run and host the bot yourself if you wish to do so. 
-If you host the bot yourself, you will have to create a file named `config.json` inside the `configs` directory,
-with a keys/value pairs in the following format `configs/create_your_config.json_here`
-
