@@ -8,9 +8,11 @@
 
 - Search for player stats by player name or BattleNet Tag.
 - Use optional arguments to refine your search.
-- Discover all available battle modes.
+- Discover all available battle modes from W3Champions.
 - Access a helpful list of commands.
 - Easy access to player stats using MenuSelects and embeds.
+
+![image](https://github.com/0nlyDev/w3c-discord-bot/assets/89726447/8833ac3f-e1c3-4388-b119-11966ce40057)
 
 ## Usage
 
@@ -18,9 +20,9 @@ To use the bot, simply type in one of the following commands:
 
 - `/player_stats_by_game_mode <PlayerName> or <BattleNetTag>`: Search for player stats.
   - Example: `/player_stats_by_game_mode Moon` or `/player_stats_by_game_mode happy#2384`
-  - You can add additional arguments to filter the results: [Region] [GameMode] [Race] [Season]
+  - You can add additional arguments: [Region] [GameMode] [Race] [Season]
   - Select from the available options or type the player's name or Battle Tag to initiate a search.
-  - If more champions are available, you can load additional results by selecting the "🌀 Summon more champions from the depths..." option.
+  - The search loads up to 20 results, you can load additional results by selecting the "🌀 Summon more champions from the depths..." option.
 
 - `/battle_modes`: Discover all available battle modes.
 
