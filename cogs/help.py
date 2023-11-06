@@ -6,7 +6,7 @@ from responses import responses
 
 
 class Help(commands.Cog):
-    def __init__(self, client: commands.bot):
+    def __init__(self, client: commands.Bot):
         self.client = client
 
     @app_commands.command(name='help', description='See all available bot commands and how to use them.')

@@ -6,10 +6,10 @@ from w3c_endpoints.active_modes import get_active_modes
 
 
 class BattleModes(commands.Cog):
-    def __init__(self, client: commands.bot):
+    def __init__(self, client: commands.Bot):
         self.client = client
 
-    @app_commands.command(name='battle_modes', description='Discover the currently active battle modes')
+    @app_commands.command(name='battle_modes', description='Discover the currently active battle modes.')
     async def battle_modes(self, interaction: discord.Interaction):
         active_modes = ', '.join([f'`{k}`' for k in get_active_modes().keys()])
         await interaction.response.send_message(content=active_modes, ephemeral=True)
