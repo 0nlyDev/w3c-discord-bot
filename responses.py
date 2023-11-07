@@ -25,5 +25,13 @@ responses = {
             'this spellwork is an open grimoire, a testament to the open-source magic of our world. Brave '
             'souls wishing to enrich its pages are welcome to journey to the arcane library 📚 of Github: '
             'https://github.com/0nlyDev/w3c-discord-bot. Your wisdom and contributions illuminate our path.'
+    },
+    'player_stats_by_game_mode': {
+        'select_player': '🌌 From the depths of the Dark Portal, select your champion below:',
+        'no_players_found': '🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.',
+        'load_more_search_results': '🌀 Summon more champions from the depths...',
+        'loaded_more_search_results': '🌌 Through the Dark Portal, more champions emerge!',
+        'end_of_search': '🌌 By the Light! It seems like we\'ve reached the end of our journey! No more champions '
+                         'emerge from the Dark Portal. Try with a different Champion name...'
     }
 }
