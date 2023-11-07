@@ -1,3 +1,5 @@
+from w3c_endpoints.active_modes import get_active_modes
+
 responses = {
     'help': {
         'help_response':
@@ -12,13 +14,13 @@ responses = {
             'Select from the available options or type the player\'s name or Battle Tag to initiate a search.\n'
             'You can load additional results by selecting the "🌀 Summon more champions from the depths..." option '
             'from the dropdown menu.\n\n'
-    
+
             '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
             'Use the `/battle_modes` command to reveal all available battle modes.\n\n'
-    
+
             '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
             'To access this help message again, simply use the `/help` command.\n\n'
-    
+
             '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
             'Winds of magic can be unpredictable... Should you encounter misplaced enchantments or if the bot '
             'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
@@ -35,3 +37,7 @@ responses = {
                          'emerge from the Dark Portal. Try with a different Champion name...'
     }
 }
+
+
+def active_modes_response():
+    return ', '.join([f'`{k}`' for k in get_active_modes().keys()])
