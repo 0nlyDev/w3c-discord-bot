@@ -56,7 +56,7 @@ def get_player_stats(bnet_tag, gate_way=None, season=None):
         player_stats = json.loads(response.text)
         if not player_stats and gate_way != 'us':
             print('trying to guess gate_way, 2nd time (us).', bnet_tag)
-            player_stats = get_player_stats(bnet_tag, 'us')
-        return player_stats
+            player_stats, gate_way = get_player_stats(bnet_tag, 'us')
+        return player_stats, gate_way
     except Exception as e:
         raise e

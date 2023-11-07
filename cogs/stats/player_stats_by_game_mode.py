@@ -24,17 +24,18 @@ class PlayerStatsByGameMode(commands.Cog):
                                         player_name: str,
                                         gate_way: str = None):
 
+        provided_gate_way = gate_way
         search_results = player_search(player_name)
         response, view = None, None
         if search_results:
             # If only one player is available, display the stats embed immediately
             if len(search_results) == 1:
                 bnet_tag = search_results[0].split(' ')[0]
-                player_stats = get_player_stats(bnet_tag, gate_way)
-                response, view = get_player_stats_embed(player_stats, bnet_tag)
+                player_stats, _ = get_player_stats(bnet_tag, gate_way=gate_way)
+                response, view = get_player_stats_embed(player_stats, bnet_tag, gate_way=gate_way)
             # Otherwise, display the search menu
             else:
-                response, view = PlayerSearchMenu(player_name, search_results, gate_way), None
+                response, view = PlayerSearchMenu(player_name, search_results, gate_way, provided_gate_way), None
         if response:
             if hasattr(response, 'children') and len(response.children) > 0:
                 await interaction.response.send_message(THIS_RESPONSE['select_player'], view=response, ephemeral=True)
@@ -48,14 +49,15 @@ class PlayerStatsByGameMode(commands.Cog):
 
 
 class PlayerSearchMenu(discord.ui.View):
-    def __init__(self, player_name, search_results, gate_way):
+    def __init__(self, player_name, search_results, gate_way, provided_gate_way):
         super().__init__()
-        self.add_item(PlayerSearchSelect(player_name, search_results, gate_way))
+        self.add_item(PlayerSearchSelect(player_name, search_results, gate_way, provided_gate_way))
 
 
 class PlayerSearchSelect(discord.ui.Select):
-    def __init__(self, player_name, search_results, gate_way):
-        self.player_name, self.search_results, self.gate_way = player_name, search_results, gate_way
+    def __init__(self, player_name, search_results, gate_way, provided_gate_way):
+        self.player_name, self.search_results, self.gate_way, self.provided_gate_way = (
+            player_name, search_results, gate_way, provided_gate_way)
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
         if len(options) > 0:
             # w3c playerSearch endpoint is not reliable - sometimes returns less than 20 players
@@ -66,6 +68,8 @@ class PlayerSearchSelect(discord.ui.Select):
         super().__init__(placeholder='Champion manifest from the portal\'s depths:', options=options)
 
     async def callback(self, interaction):
+        if self.provided_gate_way is None:
+            self.gate_way = None
         user_choice = interaction.data['values'][0]
         if THIS_RESPONSE['load_more_search_results'] == user_choice:
             last_bnet_tag = next(i for i in reversed(
@@ -73,7 +77,7 @@ class PlayerSearchSelect(discord.ui.Select):
             new_search_results = player_search(self.player_name, last_bnet_tag)
             if isinstance(new_search_results, list) and new_search_results:
                 new_menu_select = PlayerSearchMenu(
-                    self.player_name, new_search_results, self.gate_way)
+                    self.player_name, new_search_results, self.gate_way, self.provided_gate_way)
                 await interaction.response.send_message(THIS_RESPONSE['loaded_more_search_results'],
                                                         view=new_menu_select, ephemeral=True)
             elif isinstance(new_search_results, list):
@@ -82,8 +86,8 @@ class PlayerSearchSelect(discord.ui.Select):
                 await interaction.response.send_message(new_search_results, ephemeral=True)
         else:
             bnet_tag = user_choice.split(' ')[0]
-            _player_stats = get_player_stats(bnet_tag, self.gate_way)
-            player_stats_embed, view = get_player_stats_embed(_player_stats, bnet_tag)
+            _player_stats, self.gate_way = get_player_stats(bnet_tag, gate_way=self.gate_way)
+            player_stats_embed, view = get_player_stats_embed(_player_stats, bnet_tag, gate_way=self.gate_way)
             if view:
                 await interaction.response.send_message(embed=player_stats_embed, view=view, ephemeral=True)
             else:
