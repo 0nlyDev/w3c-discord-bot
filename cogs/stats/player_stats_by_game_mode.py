@@ -24,14 +24,16 @@ class PlayerStatsByGameMode(commands.Cog):
         search_results = player_search(player_name)
         response, view = None, None
         if search_results:
+            # If only one player is available, display the stats embed immediately
             if len(search_results) == 1:
                 bnet_tag = search_results[0].split(' ')[0]
                 player_stats = get_player_stats(bnet_tag, gate_way)
                 response, view = get_player_stats_embed(player_stats, bnet_tag)
+            # Otherwise, display the search menu
             else:
                 response, view = PlayerSearchMenu(player_name, search_results, gate_way), None
         if response:
-            if hasattr(response, 'children') and len(response.children) > 0:  # player_name
+            if hasattr(response, 'children') and len(response.children) > 0:
                 await interaction.response.send_message(
                     '🌌 From the depths of the Dark Portal, select your champion below:', view=response, ephemeral=True)
             else:
@@ -41,7 +43,7 @@ class PlayerStatsByGameMode(commands.Cog):
                     await interaction.response.send_message(embed=response, ephemeral=True)
         else:
             await interaction.response.send_message(
-                "🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.", ephemeral=True)
+                '🌌 In the vastness beyond the Dark Portal, this champion remains a mystery.', ephemeral=True)
 
 
 class PlayerSearchMenu(discord.ui.View):
