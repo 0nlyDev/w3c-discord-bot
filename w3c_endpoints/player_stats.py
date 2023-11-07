@@ -19,7 +19,7 @@ def get_gate_way_id(gate_way):
         return 20
     elif gate_way in ['us', 'usa', 'america']:
         return 10
-    else:
+    else:  # china?
         return 0
 
 
