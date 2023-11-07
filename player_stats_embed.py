@@ -8,21 +8,25 @@ from w3c_endpoints.player_search import emojify_number
 from w3c_endpoints.player_stats import get_player_stats
 
 
-def get_new_game_modes_and_player_stats_by_season(bnet_tag, selected_season):
-    new_player_stats = get_player_stats(bnet_tag, season=selected_season)
+def get_new_game_modes_and_player_stats_by_season(bnet_tag, selected_season, gate_way=None):
+    new_player_stats, gate_way = get_player_stats(bnet_tag, season=selected_season, gate_way=gate_way)
     game_modes_in_season = []
     for stats in new_player_stats:
-        if stats['season'] == int(selected_season):
-            game_mode = get_game_mode_from_id(stats['gameMode'])
-            if game_mode not in game_modes_in_season:
-                game_modes_in_season.append(game_mode)
+        try:
+            if stats['season'] == int(selected_season):
+                game_mode = get_game_mode_from_id(stats['gameMode'])
+                if game_mode not in game_modes_in_season:
+                    game_modes_in_season.append(game_mode)
+        except TypeError:
+            print('selected_season', selected_season)
+            print("stats", stats)
     return game_modes_in_season, new_player_stats
 
 
 class SeasonsSelectMenu(Select):
-    def __init__(self, bnet_tag, player_stats, participated_in_seasons, children, game_modes_select):
-        self.bnet_tag, self.player_stats, self.children, self.game_modes_select = (
-            bnet_tag, player_stats, children, game_modes_select)
+    def __init__(self, bnet_tag, player_stats, participated_in_seasons, children, game_modes_select, gate_way):
+        self.bnet_tag, self.player_stats, self.children, self.game_modes_select, self.gate_way = (
+            bnet_tag, player_stats, children, game_modes_select, gate_way)
         self.selected_season = None
         super().__init__(placeholder='Choose season...', options=participated_in_seasons, custom_id='seasons_menu')
 
@@ -31,7 +35,7 @@ class SeasonsSelectMenu(Select):
 
         # Fetch new game modes and player stats based on the selected season
         new_game_modes, self.player_stats = get_new_game_modes_and_player_stats_by_season(
-            self.bnet_tag, self.selected_season)
+            self.bnet_tag, self.selected_season, self.gate_way)
         # Update the player_stats in the game_modes_select here
         self.game_modes_select.player_stats = self.player_stats
 
@@ -81,7 +85,7 @@ class GameModesSelect(Select):
 
 
 class MultiSelectMenu(View):
-    def __init__(self, player_stats, bnet_tag):
+    def __init__(self, player_stats, bnet_tag, gate_way=None):
         super().__init__()
         participated_in_seasons = [SelectOption(label=str(emojify_number(s)), value=str(s))
                                    for s in get_player_participated_in_seasons(bnet_tag)]
@@ -90,7 +94,7 @@ class MultiSelectMenu(View):
         game_mode_select = GameModesSelect(bnet_tag, player_stats, participated_in_seasons)
         self.add_item(game_mode_select)
         self.add_item(SeasonsSelectMenu(bnet_tag, game_mode_select.player_stats, participated_in_seasons, self.children,
-                                        game_mode_select))
+                                        game_mode_select, gate_way))
 
     def get_default_season(self):
         for item in self.children:
@@ -109,13 +113,13 @@ class MultiSelectMenu(View):
         return None
 
 
-def get_player_stats_embed(player_stats, bnet_tag, view=None):
+def get_player_stats_embed(player_stats, bnet_tag, view=None, gate_way=None):
     if not player_stats:
         return Embed(description='🌌 The Dark Portal\'s manifest reveals no stats for this champion.'), None
 
     # Create the view and get default values
     if view is None:
-        view = MultiSelectMenu(player_stats, bnet_tag)
+        view = MultiSelectMenu(player_stats, bnet_tag, gate_way)
     default_season = view.get_default_season()
     default_game_mode = view.get_default_game_mode()
 
