@@ -3,6 +3,7 @@ import json
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.app_commands import Choice
 
 from w3c_endpoints.player_search import player_search
 from w3c_endpoints.player_stats import get_player_stats
@@ -19,6 +20,8 @@ class PlayerStatsByGameMode(commands.Cog):
             self.emojis = json.load(file)
 
     @app_commands.command(name='player_stats_by_game_mode', description='Get player\'s statistics by game mode.')
+    @app_commands.describe(player_name='Player\'s Name or Battle Tag', gate_way='GateWay (Region), Europe or America)')
+    @app_commands.choices(gate_way=[Choice(name='Europe', value='europe'), Choice(name='America', value='america')])
     async def player_stats_by_game_mode(self,
                                         interaction,
                                         player_name: str,
