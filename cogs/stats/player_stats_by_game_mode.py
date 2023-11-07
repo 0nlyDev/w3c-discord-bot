@@ -4,9 +4,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from player_stats_embed import get_player_stats_embed
 from w3c_endpoints.player_search import player_search
 from w3c_endpoints.player_stats import get_player_stats
+from player_stats_embed import get_player_stats_embed
 
 
 class PlayerStatsByGameMode(commands.Cog):
@@ -19,20 +19,17 @@ class PlayerStatsByGameMode(commands.Cog):
     async def player_stats_by_game_mode(self,
                                         interaction,
                                         player_name: str,
-                                        region: str = None,
-                                        game_mode: str = None,
-                                        race: str = None,
-                                        season: str = None):
+                                        gate_way: str = None):
 
         search_results = player_search(player_name)
         response, view = None, None
         if search_results:
             if len(search_results) == 1:
                 bnet_tag = search_results[0].split(' ')[0]
-                player_stats = get_player_stats(bnet_tag, region, game_mode, race, season)
+                player_stats = get_player_stats(bnet_tag, gate_way)
                 response, view = get_player_stats_embed(player_stats, bnet_tag)
             else:
-                response, view = PlayerSearchMenu(player_name, search_results, region, game_mode, race, season), None
+                response, view = PlayerSearchMenu(player_name, search_results, gate_way), None
         if response:
             if hasattr(response, 'children') and len(response.children) > 0:  # player_name
                 await interaction.response.send_message(
@@ -48,15 +45,14 @@ class PlayerStatsByGameMode(commands.Cog):
 
 
 class PlayerSearchMenu(discord.ui.View):
-    def __init__(self, player_name, search_results, region, game_mode, race, season):
+    def __init__(self, player_name, search_results, gate_way):
         super().__init__()
-        self.add_item(PlayerSearchSelect(player_name, search_results, region, game_mode, race, season))
+        self.add_item(PlayerSearchSelect(player_name, search_results, gate_way))
 
 
 class PlayerSearchSelect(discord.ui.Select):
-    def __init__(self, player_name, search_results, region, game_mode, race, season):
-        self.player_name, self.search_results, self.region, self.game_mode, self.race, self.season = (
-            player_name, search_results, region, game_mode, race, season)
+    def __init__(self, player_name, search_results, gate_way):
+        self.player_name, self.search_results, self.gate_way = player_name, search_results, gate_way
         options = [discord.SelectOption(label=player, value=player) for player in search_results]
         self.load_more_results_string = '🌀 Summon more champions from the depths...'
         if len(options) > 0:
@@ -75,7 +71,7 @@ class PlayerSearchSelect(discord.ui.Select):
             print('self.search_results[-2]', self.search_results[-2])
             if isinstance(new_search_results, list) and new_search_results:
                 new_menu_select = PlayerSearchMenu(
-                    self.player_name, new_search_results, self.region, self.game_mode, self.race, self.season)
+                    self.player_name, new_search_results, self.gate_way)
                 await interaction.response.send_message('🌌 Through the Dark Portal, more champions emerge!',
                                                         view=new_menu_select, ephemeral=True)
             elif isinstance(new_search_results, list):
@@ -87,7 +83,7 @@ class PlayerSearchSelect(discord.ui.Select):
                 await interaction.response.send_message(new_search_results, ephemeral=True)
         else:
             bnet_tag = user_choice.split(' ')[0]
-            _player_stats = get_player_stats(bnet_tag, self.region, self.game_mode, self.race, self.season)
+            _player_stats = get_player_stats(bnet_tag, self.gate_way)
             player_stats_embed, view = get_player_stats_embed(_player_stats, bnet_tag)
             if view:
                 await interaction.response.send_message(embed=player_stats_embed, view=view, ephemeral=True)

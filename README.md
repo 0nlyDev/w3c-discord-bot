@@ -20,9 +20,9 @@ To use the bot, simply type in one of the following commands:
 
 - `/player_stats_by_game_mode <PlayerName> or <BattleNetTag>`: Search for player stats.
   - Example: `/player_stats_by_game_mode Moon` or `/player_stats_by_game_mode happy#2384`
-  - You can add additional arguments: [Region] [GameMode] [Race] [Season]
   - Select from the available options or type the player's name or Battle Tag to initiate a search.
   - The search loads up to 20 results, you can load additional results by selecting the "🌀 Summon more champions from the depths..." option.
+  - Optional arguments: [GateWay]
 
 - `/battle_modes`: Discover all available battle modes.
 
