@@ -34,7 +34,9 @@ responses = {
         'load_more_search_results': '🌀 Summon more champions from the depths...',
         'loaded_more_search_results': '🌌 Through the Dark Portal, more champions emerge!',
         'end_of_search': '🌌 By the Light! It seems like we\'ve reached the end of our journey! No more champions '
-                         'emerge from the Dark Portal. Try with a different Champion name...'
+                         'emerge from the Dark Portal. Try with a different Champion name...',
+        'hide_season_zero': 'W3C: This noble person was part of our beta, therefore we hide their buggy stats and thank'
+                            ' them for all eternity ;)'
     }
 }
 

@@ -6,6 +6,7 @@ from w3c_endpoints.active_modes import get_game_mode_from_id
 from w3c_endpoints.player import get_player_participated_in_seasons
 from w3c_endpoints.player_search import emojify_number
 from w3c_endpoints.player_stats import get_player_stats
+from responses import responses
 
 
 def get_new_game_modes_and_player_stats_by_season(bnet_tag, selected_season, gate_way=None):
@@ -136,6 +137,11 @@ def get_player_stats_embed(player_stats, bnet_tag, view=None, gate_way=None):
             game_mode = get_game_mode_from_id(player_stat['gameMode'])
             if player_stat['season'] == default_season and game_mode == default_game_mode:
                 field_counter += 1
+                # Hide player's stats for season 0 (the w3c beta period)
+                if default_season == 0:
+                    embed.add_field(name='', value=responses['player_stats_by_game_mode']['hide_season_zero'])
+                    break
+                # build the embed with stats
                 if player_stat['race'] is not None:
                     field_name = RACES[player_stat['race']][1].capitalize()
                 else:
