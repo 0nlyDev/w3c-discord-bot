@@ -27,6 +27,9 @@ class PlayerStatsByGameMode(commands.Cog):
                                         player_name: str,
                                         gate_way: str = None):
 
+        print(f'{interaction.user.display_name} from {interaction.guild.name} used /player_stats_by_game_mode name:'
+              f'{player_name} gate_way:{gate_way}')
+
         provided_gate_way = gate_way
         search_results = player_search(player_name)
         response, view = None, None
