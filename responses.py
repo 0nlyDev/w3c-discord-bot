@@ -40,7 +40,7 @@ responses = {
         'message_made_visible_by': 'has summoned this message.'
     },
     'embeds': {
-        'footer': 'W3C Bot: I\'m currently in my BETA phase, and still sharpening my code.\n'
+        'footer': 'W3C Bot: I\'m currently in BETA phase, and my code is still being sharpened.\n'
                   'Encounter a bug? Scribe an Issue on GitHub or whisper @SageNoob!',
         'no_stats_found': '🌌 The Dark Portal\'s manifest is void for this Champion.'
     },
