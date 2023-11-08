@@ -36,7 +36,12 @@ responses = {
         'end_of_search': '🌌 By the Light! It seems like we\'ve reached the end of our journey! No more champions '
                          'emerge from the Dark Portal. Try with a different Champion name...',
         'hide_season_zero': 'W3C: This noble person was part of our beta, therefore we hide their buggy stats and thank'
-                            ' them for all eternity ;)'
+                            ' them for all eternity ;)',
+        'message_made_visible_by': 'has summoned this message.'
+    },
+    'embeds': {
+        'footer': 'W3C Bot: I\'m currently in my BETA phase, and still sharpening my code.\n'
+                  'Encounter a bug? Scribe an Issue on GitHub or whisper @SageNoob!'
     }
 }
 
