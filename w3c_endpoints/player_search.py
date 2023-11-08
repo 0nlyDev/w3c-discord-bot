@@ -2,6 +2,8 @@ import json
 import os
 import requests
 
+from responses import responses
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 emojis_file_path = os.path.join(current_directory, "..", "assets", "emojis.json")
 
@@ -29,14 +31,13 @@ def player_search_endpoint(player_name, last_object_id=None):
         return player_search_results
     except requests.exceptions.ConnectionError as e:
         print(f'⚠️ requests.exceptions.ConnectionError: {str(e)}')
-        return e
+        return requests.exceptions.ConnectionError
 
 
 def player_search(player_name, last_object_id=None):
     player_search_results = player_search_endpoint(player_name, last_object_id)
     if player_search_results == requests.exceptions.ConnectionError:
-        return (f'⚠️ A troubling ConnectionError, sent by W3Champions, has found its way back to us. '
-                f'Please attempt again later.')
+        return responses['error_responses']['connection_error']
 
     players = []
     for player in player_search_results:
