@@ -1,5 +1,6 @@
+import discord
 from discord import Embed, SelectOption, Interaction
-from discord.ui import Select, View
+from discord.ui import Select, View, Button
 
 from w3c_endpoints.player_stats import RACES
 from w3c_endpoints.active_modes import get_game_mode_from_id
@@ -85,6 +86,18 @@ class GameModesSelect(Select):
         await interaction.response.edit_message(embed=player_stats_embed, view=view)
 
 
+class MakeMessageVisibleBtn(Button):
+    def __init__(self, stored_embed, style=discord.ButtonStyle.blurple, emoji='👀', label='Reveal Me!',
+                 custom_id='make_message_visible_btn'):
+        super().__init__(style=style, emoji=emoji, label=label, custom_id=custom_id)
+        self.stored_embed = stored_embed
+
+    async def callback(self, interaction: discord.Interaction):
+        user = interaction.user.mention
+        response = f"👀 {user} {responses['player_stats_by_game_mode']['message_made_visible_by']}"
+        await interaction.response.send_message(content=response, embed=self.stored_embed, ephemeral=False)
+
+
 class MultiSelectMenu(View):
     def __init__(self, player_stats, bnet_tag, gate_way=None):
         super().__init__()
@@ -161,8 +174,16 @@ def get_player_stats_embed(player_stats, bnet_tag, view=None, gate_way=None):
         embed.add_field(name=f'\nSEASON: {emojify_number(default_season)}', value='', inline=False)
         embed.add_field(name='', value='', inline=False)
         embed.add_field(name='', value='[GitHub](https://github.com/0nlyDev/w3c-discord-bot)', inline=False)
-        footer_text = 'To reveal these stats to others, simply react with the 👁️ emoji.'
-        embed.set_footer(text=footer_text)
+        embed.set_footer(text=responses['embeds']['footer'])
+        # Create the make_message_visible_btn and pass it the embed
+        if not next((item for item in view.children if getattr(item, 'custom_id', None) == 'make_message_visible_btn'),
+                    None):
+            view.add_item(MakeMessageVisibleBtn(stored_embed=embed))
+        # Pass the updated embed to the make_message_visible_btn
+        else:
+            for item in view.children:
+                if getattr(item, 'custom_id', None):
+                    item.stored_embed = embed
         return embed, view
 
 
