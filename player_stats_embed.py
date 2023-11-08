@@ -97,9 +97,11 @@ class MakeMessageVisibleBtn(Button):
         self.stored_embed = stored_embed
 
     async def callback(self, interaction: discord.Interaction):
-        user = interaction.user.mention
-        response = f"👀 {user} {responses['player_stats_by_game_mode']['message_made_visible_by']}"
+        response = f"👀 {interaction.user.mention} {responses['player_stats_by_game_mode']['message_made_visible_by']}"
         await interaction.response.send_message(content=response, embed=self.stored_embed, ephemeral=False)
+        original_response = await interaction.original_response()
+        print(f'{interaction.user.display_name} from {interaction.guild.name} via {interaction.channel.name} '
+              f'revealed stats for: {self.stored_embed.title}, jump_url: {original_response.jump_url}')
 
 
 class MultiSelectMenu(View):

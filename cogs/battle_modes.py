@@ -11,6 +11,7 @@ class BattleModes(commands.Cog):
 
     @app_commands.command(name='battle_modes', description='Discover the currently active battle modes.')
     async def battle_modes(self, interaction: discord.Interaction):
+        print(f'{interaction.user.display_name} from {interaction.guild.name} used /battle_modes')
         active_modes = active_modes_response()
         await interaction.response.send_message(content=active_modes, ephemeral=True)
 
