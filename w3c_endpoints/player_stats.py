@@ -35,8 +35,8 @@ def parse_bnet_tag(bnet_tag):
 
 def get_player_stats(bnet_tag, gate_way=None, season=None):
     if gate_way is None:
-        gate_way = 'eu'
-        print('Guessing gate_way, 1st time.')
+        gate_way = 'europe'
+        print('Guessing gate_way, 1st time (europe).')
 
     if season is None:
         players = player_search_endpoint(bnet_tag)
@@ -54,9 +54,9 @@ def get_player_stats(bnet_tag, gate_way=None, season=None):
 
         response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
         player_stats = json.loads(response.text)
-        if not player_stats and gate_way != 'us':
-            print('trying to guess gate_way, 2nd time (us).', bnet_tag)
-            player_stats, gate_way = get_player_stats(bnet_tag, 'us')
+        if not player_stats and gate_way != 'america':
+            print('trying to guess gate_way, 2nd time (america).', bnet_tag)
+            player_stats, gate_way = get_player_stats(bnet_tag, gate_way='america', season=season)
         return player_stats, gate_way
     except Exception as e:
         raise e

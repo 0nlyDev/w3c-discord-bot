@@ -38,6 +38,10 @@ class SeasonsSelectMenu(Select):
         # Fetch new game modes and player stats based on the selected season
         new_game_modes, self.player_stats = get_new_game_modes_and_player_stats_by_season(
             self.bnet_tag, self.selected_season, self.gate_way)
+        if not new_game_modes:
+            # try to find stats without specified (or fist found) region
+            new_game_modes, self.player_stats = get_new_game_modes_and_player_stats_by_season(
+                self.bnet_tag, self.selected_season)
         # Update the player_stats in the game_modes_select here
         self.game_modes_select.player_stats = self.player_stats
 
