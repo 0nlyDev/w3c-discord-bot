@@ -129,7 +129,7 @@ class MultiSelectMenu(View):
 
 def get_player_stats_embed(player_stats, bnet_tag, view=None, gate_way=None):
     if not player_stats:
-        return Embed(description='🌌 The Dark Portal\'s manifest reveals no stats for this champion.'), None
+        return Embed(description=responses['embeds']['no_stats_found']), None
 
     # Create the view and get default values
     if view is None:
