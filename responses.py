@@ -41,7 +41,8 @@ responses = {
     },
     'embeds': {
         'footer': 'W3C Bot: I\'m currently in my BETA phase, and still sharpening my code.\n'
-                  'Encounter a bug? Scribe an Issue on GitHub or whisper @SageNoob!'
+                  'Encounter a bug? Scribe an Issue on GitHub or whisper @SageNoob!',
+        'no_stats_found': '🌌 The Dark Portal\'s manifest is void for this Champion.'
     },
     'error_responses': {
         'connection_error': '⚠️ A troubling ConnectionError, sent by W3Champions, has found its way back to us. '
