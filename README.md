@@ -12,7 +12,7 @@
 - Access a helpful list of commands.
 - Easy access to player stats using MenuSelects and embeds.
 
-![image](https://github.com/0nlyDev/w3c-discord-bot/assets/89726447/8833ac3f-e1c3-4388-b119-11966ce40057)
+![image](https://github.com/0nlyDev/w3c-discord-bot/assets/89726447/1e9e81ad-d17a-4a00-9494-61a2f659556b)
 
 ## Usage
 
