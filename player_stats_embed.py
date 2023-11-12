@@ -25,6 +25,19 @@ def get_new_game_modes_and_player_stats_by_season(bnet_tag, selected_season, gat
     return game_modes_in_season, new_player_stats
 
 
+def get_race_emoji(race):
+    if race == 'ne':
+        return '<:night_elf:1172634662418513931>'
+    elif race == 'oc':
+        return '<:orc:1172634647063187517>'
+    elif race == 'hu':
+        return '<:human:1172634674087088180>'
+    elif race == 'ud':
+        return '<:undead:1172633759674273802>'
+    elif race == 'rnd':
+        return '<:random:1172634634400563271>'
+
+
 class SeasonsSelectMenu(Select):
     def __init__(self, bnet_tag, player_stats, participated_in_seasons, children, game_modes_select, gate_way):
         self.bnet_tag, self.player_stats, self.children, self.game_modes_select, self.gate_way = (
@@ -162,7 +175,8 @@ def get_player_stats_embed(player_stats, bnet_tag, view=None, gate_way=None):
                     break
                 # build the embed with stats
                 if player_stat['race'] is not None:
-                    field_name = RACES[player_stat['race']][1].capitalize()
+                    field_name = (f'{get_race_emoji(RACES[player_stat["race"]][0])} '
+                                  f'{RACES[player_stat["race"]][1].capitalize()}')
                 else:
                     player_s = 'Player'
                     if len(player_stat['playerIds']) > 1:
