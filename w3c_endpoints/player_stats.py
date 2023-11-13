@@ -43,7 +43,7 @@ def get_player_stats(bnet_tag, gate_way=None, season=None):
         if players and players[0]['seasons']:
             season = players[0]['seasons'][0]['id']  # get last played season
         else:
-            return
+            return None, gate_way
     try:
         url = f'https://website-backend.w3champions.com/api/players/{parse_bnet_tag(bnet_tag)}/game-mode-stats'
 
