@@ -44,6 +44,12 @@ responses = {
                   'Encounter a bug? Scribe an Issue on GitHub or whisper @SageNoob!',
         'no_stats_found': '🌌 The Dark Portal\'s manifest is void for this Champion.'
     },
+    'my_battle_tag': {
+        'player_not_found': 'Couldn\'t find `{BATTLE_TAG}` on W3Champions.\nMake sure you typed in your BattleTag '
+                            'correctly and you have a valid account registered on www.w3champions.com.',
+        'battle_tag_saved': 'Your BattleTag `{BATTLE_TAG}` has been saved.',
+        'show_user_battle_tag': '{USERNAME}\'s BattleTag is {BATTLE_TAG}.'
+    },
     'error_responses': {
         'connection_error': '⚠️ A troubling ConnectionError, sent by W3Champions, has found its way back to us. '
                             'Please attempt again later.'
