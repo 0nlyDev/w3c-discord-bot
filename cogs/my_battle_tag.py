@@ -25,7 +25,7 @@ class MyBattleTag(commands.Cog):
                             interaction,
                             battle_tag: str = None):
         print(f'{interaction.user.display_name} from {interaction.guild.name} used /my_battle_tag')
-
+        user_provided_battle_tag = battle_tag
         # Display user BattleTag
         if battle_tag is None:
             #  If there's an associated BattleTag for this user in the database, display their BattleTag
@@ -42,15 +42,21 @@ class MyBattleTag(commands.Cog):
                                                         ephemeral=True)
         # Save user BattleTag
         elif '#' in battle_tag:
-            search_results = player_search(battle_tag)
+            search_results = player_search(battle_tag, return_players_string=False)
             # if the search returns a single result, save the battle tag
+            print('search_results', search_results)
             if len(search_results) == 1:
-                battle_tag = search_results[0].split(' ')[0]
+                battle_tag = next(iter(search_results))
                 save_battle_tag_in_database(interaction.user, battle_tag)
                 await interaction.response.send_message(
                     content=responses['my_battle_tag']['battle_tag_saved'].replace('{BATTLE_TAG}', f'{battle_tag}'),
                     ephemeral=True)
+                # TODO: fix response typo and add mention (improve the sentence)
                 print(f'BattleTag saved: {battle_tag}')
+            elif len(search_results) > 1:
+                print(f'WARNING: More than 1 BattleTag was found in search_results.\n'
+                      f'user_provided_battle_tag: {user_provided_battle_tag}\n'
+                      f'search_results: {search_results}')
             else:
                 print(f'BattleTag not found on w3champions: "{battle_tag}"')
                 await interaction.response.send_message(

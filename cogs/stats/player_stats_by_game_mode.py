@@ -80,7 +80,7 @@ class PlayerSearchSelect(discord.ui.Select):
         if THIS_RESPONSE['load_more_search_results'] == user_choice:
             last_bnet_tag = next(i for i in reversed(
                 self.search_results) if i != THIS_RESPONSE['load_more_search_results'])
-            new_search_results = player_search(self.player_name, last_bnet_tag)
+            new_search_results = player_search(self.player_name, last_object_id=last_bnet_tag)
             if isinstance(new_search_results, list) and new_search_results:
                 new_menu_select = PlayerSearchMenu(
                     self.player_name, new_search_results, self.gate_way, self.provided_gate_way)
