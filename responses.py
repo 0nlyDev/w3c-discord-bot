@@ -46,9 +46,13 @@ responses = {
     },
     'my_battle_tag': {
         'player_not_found': 'Couldn\'t find `{BATTLE_TAG}` on W3Champions.\nMake sure you typed in your BattleTag '
-                            'correctly and you have a valid account registered on www.w3champions.com.',
-        'battle_tag_saved': 'Your BattleTag `{BATTLE_TAG}` has been saved.',
-        'show_user_battle_tag': '{USERNAME}\'s BattleTag is {BATTLE_TAG}.'
+                            'correctly and that you have an account registered on https://www.w3champions.com/.',
+        'battle_tag_saved': 'Congrats! Your BattleTag `{BATTLE_TAG}` has been saved in my database. Now you and'
+                            'other users can use a @mention to easily find your w3c profile.',
+        'show_user_battle_tag': '{USERNAME}\'s BattleTag is {BATTLE_TAG}.',
+        'user_w/o_battle_tag': 'There\'s no BattleTag tied to your username. Using the same command, please '
+                               'provide your BattleTag.\ne.g. `/my_battle_tag happy#2384`.',
+        'invalid_battle_tag': 'Invalid BattleTag format. BattleTag should include a hashtag `#`, e.g. `happy#2384`.'
     },
     'error_responses': {
         'connection_error': '⚠️ A troubling ConnectionError, sent by W3Champions, has found its way back to us. '
