@@ -48,10 +48,9 @@ class MyBattleTag(commands.Cog):
             if len(search_results) == 1:
                 battle_tag = next(iter(search_results))
                 save_battle_tag_in_database(interaction.user, battle_tag)
-                await interaction.response.send_message(
-                    content=responses['my_battle_tag']['battle_tag_saved'].replace('{BATTLE_TAG}', f'{battle_tag}'),
-                    ephemeral=True)
-                # TODO: fix response typo and add mention (improve the sentence)
+                this_response = responses['my_battle_tag']['battle_tag_saved'].replace('{BATTLE_TAG}', f'{battle_tag}')
+                this_response = this_response.replace('{@MENTION}', interaction.user.mention)
+                await interaction.response.send_message(content=this_response, ephemeral=True)
                 print(f'BattleTag saved: {battle_tag}')
             elif len(search_results) > 1:
                 print(f'WARNING: More than 1 BattleTag was found in search_results.\n'
