@@ -6,6 +6,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 Base = declarative_base()
 
 
+# TODO: create and engine instance just once and import it from elsewhere when needed
 def get_engine(config_path='./configs/config.json'):
     with open(config_path, 'r') as file:
         data = json.load(file)

@@ -5,24 +5,23 @@ responses = {
         'help_response':
             '🔥 **W3C Bot Slash Commands to reveal the World of W3Champions** 🔥:\n\n'
 
-            '🔎 **Seek champions by Name or BattleTag to reveal their legendary stats** 🔎:\n'
-            'To initiate a search, use the `/player_stats_by_game_mode` command followed by the '
-            'player\'s name or BattleTag.\n'
-            'e.g., `/player_stats_by_game_mode Moon` or `/player_stats_by_game_mode happy#2384`\n'
+            '🔎 **Discover Champions\' Stats by @mention, Name, or BattleTag** 🔎:\n'
+            'Invoke `/player_stats_by_game_mode` with a Discord `@mention`, `BattleTag`, or just a `name`.\n'
+            'Examples: `/player_stats_by_game_mode @SageNoob`, `/player_stats_by_game_mode happy#2384`, '
+            '`/player_stats_by_game_mode Moon`.\n'
             'If you know the Champion\'s GateWay, you can add an additional argument in the search.\n'
             'e.g. `/player_stats_by_game_mode Grubby Europe`\n'
-            'Select from the available options or type the player\'s name or BattleTag to initiate a search.\n'
-            'You can load additional results by selecting the "🌀 Summon more champions from the depths..." option '
-            'from the dropdown menu.\n\n'
+            'If multiple champions are found, you can load additional results by selecting the '
+            '"🌀 Summon more champions from the depths..." option from the dropdown menu.\n\n'
             
             '🏷️ **Enchant your Discord Presence by linking your BattleTag to your Discord identity** 🏷️️:\n'
-            'Use `/my_battle_tag` to link, update, or reveal your BattleTag.\n'
-            'e.g. `/my_battle_tag happy#2384` to link or update your BattleTag, or simply `/my_battle_tag` to view '
+            'Invoke `/my_battle_tag` to link, update, or reveal your BattleTag.\n'
+            'e.g. `/my_battle_tag happy#2384` to link or update your BattleTag, or just `/my_battle_tag` to view '
             'your currently linked BattleTag. This mystical link allows fellow champions to effortlessly conjure your '
             'W3C stats by simply invoking your Discord @name. e.g. /player_stats_by_game_mode {@USERNAME}\n\n'
 
             '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
-            'Use the `/battle_modes` command to reveal all available battle modes.\n\n'
+            'Invoke the `/battle_modes` command to reveal all available battle modes.\n\n'
 
             '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
             'To access this help message again, simply use the `/help` command.\n\n'
@@ -43,7 +42,10 @@ responses = {
                          'emerge from the Dark Portal. Try with a different Champion name...',
         'hide_season_zero': 'W3C: This noble person was part of our beta, therefore we hide their buggy stats and thank'
                             ' them for all eternity ;)',
-        'message_made_visible_by': 'has summoned this message.'
+        'message_made_visible_by': 'has summoned this message.',
+        'discord_user_is_none': '{PLAYER_NAME} remains elusive in the scrolls of my Ancient Archives. Please ask {'
+                                'PLAYER_NAME} to remedy this by linking their BattleTag with their Discord identity, '
+                                'using the `/my_battle_tag <BattleTag>` command.'
     },
     'embeds': {
         'footer': 'W3C Bot: I\'m currently in BETA phase, and my code is still being sharpened.\n'

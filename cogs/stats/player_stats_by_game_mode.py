@@ -1,4 +1,5 @@
 import json
+import re
 
 import discord
 from discord import app_commands
@@ -9,6 +10,12 @@ from w3c_endpoints.player_search import player_search
 from w3c_endpoints.player_stats import get_player_stats
 from player_stats_embed import get_player_stats_embed
 from responses import responses
+from db_queries.database import get_engine, initialize_database, create_session
+from db_queries.operations import get_user
+
+# Initialize the database
+engine = get_engine()
+initialize_database(engine)
 
 THIS_RESPONSE = responses['player_stats_by_game_mode']
 
@@ -20,7 +27,8 @@ class PlayerStatsByGameMode(commands.Cog):
             self.emojis = json.load(file)
 
     @app_commands.command(name='player_stats_by_game_mode', description='Get player\'s statistics by game mode.')
-    @app_commands.describe(player_name='Player\'s Name or Battle Tag', gate_way='GateWay (Region), Europe or America)')
+    @app_commands.describe(player_name='Player\'s @DiscordName, just a Name, or BattleTag',
+                           gate_way='GateWay, Europe or America)')
     @app_commands.choices(gate_way=[Choice(name='Europe', value='europe'), Choice(name='America', value='america')])
     async def player_stats_by_game_mode(self,
                                         interaction,
@@ -31,7 +39,20 @@ class PlayerStatsByGameMode(commands.Cog):
               f'{player_name} gate_way:{gate_way}')
 
         provided_gate_way = gate_way
-        search_results = player_search(player_name)
+
+        user_id = get_user_id_from_mention(player_name)
+        session = create_session(engine)
+        user = get_user(session, user_id)
+        session.close()
+        # If player_name is a discord @mention
+        if user:
+            search_results = [user.battle_tag]
+        elif player_name.startswith('<@') and player_name.endswith('>'):
+            this_response = THIS_RESPONSE['discord_user_is_none'].replace('{PLAYER_NAME}', player_name)
+            await interaction.response.send_message(this_response, ephemeral=True)
+            return  # end search here
+        else:
+            search_results = player_search(player_name)
         response, view = None, None
         if search_results:
             # If only one player is available, display the stats embed immediately
@@ -102,3 +123,10 @@ class PlayerSearchSelect(discord.ui.Select):
 
 async def setup(client: commands.Bot):
     await client.add_cog(PlayerStatsByGameMode(client))
+
+
+def get_user_id_from_mention(mention):
+    match = re.match(r'<@!?(\d+)>', mention)
+    if match:
+        return int(match.group(1))
+    return None
