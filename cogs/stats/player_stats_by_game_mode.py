@@ -10,12 +10,8 @@ from w3c_endpoints.player_search import player_search
 from w3c_endpoints.player_stats import get_player_stats
 from player_stats_embed import get_player_stats_embed
 from responses import responses
-from db_queries.database import get_engine, initialize_database, create_session
+from db_queries.database import get_engine, create_session
 from db_queries.operations import get_user
-
-# Initialize the database
-engine = get_engine()
-initialize_database(engine)
 
 THIS_RESPONSE = responses['player_stats_by_game_mode']
 
@@ -41,6 +37,7 @@ class PlayerStatsByGameMode(commands.Cog):
         provided_gate_way = gate_way
 
         user_id = get_user_id_from_mention(player_name)
+        engine = get_engine()
         session = create_session(engine)
         user = get_user(session, user_id)
         session.close()

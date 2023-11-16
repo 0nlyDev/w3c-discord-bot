@@ -3,6 +3,7 @@ import os
 
 import discord
 from discord.ext import commands
+from db_queries.database import get_engine, initialize_database
 
 
 class W3ChampionsBot(commands.Bot):
@@ -37,5 +38,8 @@ class W3ChampionsBot(commands.Bot):
         await self.session.close()
 
 
+# Create tables in the database (this is safe to run multiple times as it will not recreate tables that already exist)
+initialize_database(get_engine())
+# Run the bot
 client = W3ChampionsBot()
 client.run(client.token)

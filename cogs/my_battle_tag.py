@@ -3,12 +3,8 @@ from discord.ext import commands
 
 from responses import responses
 from w3c_endpoints.player_search import player_search
-from db_queries.database import get_engine, initialize_database, create_session
+from db_queries.database import get_engine, create_session
 from db_queries.operations import get_user, upsert_user
-
-# Initialize the database
-engine = get_engine()
-initialize_database(engine)
 
 
 class MyBattleTag(commands.Cog):
@@ -26,6 +22,7 @@ class MyBattleTag(commands.Cog):
         # Display user BattleTag
         if battle_tag is None:
             #  If there's an associated BattleTag for this user in the database, display their BattleTag
+            engine = get_engine()
             session = create_session(engine)
             user = get_user(session, interaction.user.id)
             if user:
@@ -46,6 +43,7 @@ class MyBattleTag(commands.Cog):
             # if the search returns a single result, save the battle tag
             if len(search_results) == 1:
                 battle_tag = next(iter(search_results))
+                engine = get_engine()
                 session = create_session(engine)
                 result = upsert_user(session, interaction.user.id, interaction.user.name, battle_tag)
                 print(result)

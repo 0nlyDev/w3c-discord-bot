@@ -16,7 +16,7 @@ def get_engine(config_path='./configs/config.json'):
                          f"{data['db_host']}:"
                          f"{data['db_port']}/"
                          f"{data['db_name']}")
-    engine = create_engine(connection_string)
+    engine = create_engine(connection_string, pool_pre_ping=True)
     return engine
 
 
