@@ -12,7 +12,8 @@ class Help(commands.Cog):
     @app_commands.command(name='help', description='See all available bot commands and how to use them.')
     async def help(self, interaction: discord.Interaction):
         print(f'{interaction.user.display_name} from {interaction.guild.name} used /help')
-        await interaction.response.send_message(content=responses['help']['help_response'], ephemeral=True)
+        await interaction.response.send_message(content=responses['help']['help_response'].replace(
+            '{@USERNAME}', interaction.user.mention), ephemeral=True)
 
 
 async def setup(client: commands.Bot):
