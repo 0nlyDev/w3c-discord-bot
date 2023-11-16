@@ -5,15 +5,21 @@ responses = {
         'help_response':
             '🔥 **W3C Bot Slash Commands to reveal the World of W3Champions** 🔥:\n\n'
 
-            '🔎 **Seek champions by Name or Battle Tag to reveal their legendary stats** 🔎:\n'
+            '🔎 **Seek champions by Name or BattleTag to reveal their legendary stats** 🔎:\n'
             'To initiate a search, use the `/player_stats_by_game_mode` command followed by the '
-            'player\'s name or Battle Tag.\n'
+            'player\'s name or BattleTag.\n'
             'e.g., `/player_stats_by_game_mode Moon` or `/player_stats_by_game_mode happy#2384`\n'
             'If you know the Champion\'s GateWay, you can add an additional argument in the search.\n'
             'e.g. `/player_stats_by_game_mode Grubby Europe`\n'
-            'Select from the available options or type the player\'s name or Battle Tag to initiate a search.\n'
+            'Select from the available options or type the player\'s name or BattleTag to initiate a search.\n'
             'You can load additional results by selecting the "🌀 Summon more champions from the depths..." option '
             'from the dropdown menu.\n\n'
+            
+            '🏷️ **Enchant your Discord Presence by linking your BattleTag to your Discord identity** 🏷️️:\n'
+            'Use `/my_battle_tag` to link, update, or reveal your BattleTag.\n'
+            'e.g. `/my_battle_tag happy#2384` to link or update your BattleTag, or simply `/my_battle_tag` to view '
+            'your currently linked BattleTag. This mystical link allows fellow champions to effortlessly conjure your '
+            'W3C stats by simply invoking your Discord @name. e.g. /player_stats_by_game_mode {@USERNAME}\n\n'
 
             '⚔️ **Discover all the battle modes in the World of W3Champions** ⚔️:\n'
             'Use the `/battle_modes` command to reveal all available battle modes.\n\n'
@@ -45,15 +51,19 @@ responses = {
         'no_stats_found': '🌌 The Dark Portal\'s manifest is void for this Champion.'
     },
     'my_battle_tag': {
-        'show_user_battle_tag': '{USERNAME}\'s BattleTag is {BATTLE_TAG}.',
-        'user_w/o_battle_tag': 'There\'s no BattleTag tied to your username. Using the same command, please '
-                               'provide your BattleTag.\ne.g. `/my_battle_tag happy#2384`.',
-        'battle_tag_saved': 'Congrats! Your BattleTag `{BATTLE_TAG}` has been saved in my database. Now you and '
-                            'other users can find your W3C profile by mentioning you.\n'
-                            'e.g. `/player_stats_by_game_mode` {@MENTION}',
-        'player_not_found': 'Couldn\'t find `{BATTLE_TAG}` on W3Champions.\nMake sure you typed in your BattleTag '
-                            'correctly and that you have an account registered on https://www.w3champions.com/.',
-        'invalid_battle_tag': 'Invalid BattleTag format. BattleTag should include a hashtag `#`, e.g. `happy#2384`.'
+        'show_user_battle_tag': '🔮 Champion, behold your BattleTag: {BATTLE_TAG}',
+        'user_w/o_battle_tag': '📜 Noble Champion, your Discord identity is yet unlinked to a BattleTag. To link your '
+                               'BattleTag, use the same command followed by your BattleTag.\n'
+                               'e.g. `/my_battle_tag happy#2384`',
+        'battle_tag_saved': '🔗 Success! A link has been forged in my ancient archives, between your Discord identity '
+                            'and your BattleTag {BATTLE_TAG}. Now fellow champions can summon your tales from the '
+                            'World Of W3Champions by simply calling upon your Discord name.\ne.g. '
+                            '/player_stats_by_game_mode {@MENTION}',
+        'player_not_found': '🔍 Alas! The champion `{BATTLE_TAG}` eludes our search in the World Of W3Champions. Verify'
+                            ' that your BattleTag was spelled correctly and ensure you have an account registered in '
+                            'the halls of https://www.w3champions.com/ with at least one ranked game played.',
+        'invalid_battle_tag': '⚠️ Beware, brave champion! Your BattleTag must bear the mark of a hashtag `#`, akin to '
+                              '`happy#2384`, to be deemed worthy.'
     },
     'error_responses': {
         'connection_error': '⚠️ A troubling ConnectionError, sent by W3Champions, has found its way back to us. '
