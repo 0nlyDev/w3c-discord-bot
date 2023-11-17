@@ -8,13 +8,15 @@ To invite the bot to your Discord server, use the following link:
 [Invite W3C Bot](https://discord.com/api/oauth2/authorize?client_id=1166203153654501406&permissions=826781222912&scope=bot)
 
 ## Features
-
-- Search for player stats  with a discord @mention, BattleTag or just simply by "any name".
+- Slash commands, e.g. `/player_stats_by_game_mode`
+- To reduce chat spam, all bot responses are visible only to the user invoking the commands, unless they choose to make it visible with others.
+- Search for player stats with a discord @mention, BattleTag or just simply by "any name".
+- Makes use of the context menu in Discord. e.g. you can right-click on any Username > Apps > /player_stats_by_game_mode to invoke the command instead of typing it in chat.
 - Link your BattleTag to your Discord identity (so that other users can find your stats from W3Champions by @mentioning_you)
 - Use optional arguments to refine your search.
 - Discover all available battle modes from W3Champions.
 - Access a helpful list of commands.
-- Easy access to player stats using MenuSelects and Embeds.
+- Easy access to player stats using dropdown menus and embeds.
 
 ![image](https://github.com/0nlyDev/w3c-discord-bot/assets/89726447/1e9e81ad-d17a-4a00-9494-61a2f659556b)
 

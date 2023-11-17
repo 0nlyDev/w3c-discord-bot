@@ -12,7 +12,10 @@ responses = {
             'If you know the Champion\'s GateWay, you can add an additional argument in the search.\n'
             'e.g. `/player_stats_by_game_mode Grubby Europe`\n'
             'If multiple champions are found, you can load additional results by selecting the '
-            '"🌀 Summon more champions from the depths..." option from the dropdown menu.\n\n'
+            '`🌀 Summon more champions from the depths...` option from the dropdown menu.\n'
+            'tip: Instead of invoking a slash command from chat, you can leverage the context menu in Discord. To do '
+            'that, right click on any Username > Apps > `/player_stats_by_g...` and this will summon the stats for '
+            'that user.\n\n'
             
             '🏷️ **Enchant your Discord Presence by linking your BattleTag to your Discord identity** 🏷️️:\n'
             'Invoke `/my_battle_tag` to link, update, or reveal your BattleTag.\n'
@@ -26,12 +29,12 @@ responses = {
             '🌙 **Seeking guidance, young adventurer?** 🌙:\n'
             'To access this help message again, simply use the `/help` command.\n\n'
 
-            '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
-            'Winds of magic can be unpredictable... Should you encounter misplaced enchantments or if the bot '
-            'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
-            'this spellwork is an open grimoire, a testament to the open-source magic of our world. Brave '
-            'souls wishing to enrich its pages are welcome to journey to the arcane library 📚 of Github: '
-            'https://github.com/0nlyDev/w3c-discord-bot. Your wisdom and contributions illuminate our path.'
+            # '📜 **Guardian\'s Scroll**: The W3C Bot, safeguarded by Medivh, stands in its **BETA** phase. '
+            # 'Winds of magic can be unpredictable... Should you encounter misplaced enchantments or if the bot '
+            # 'drifts into the void, seek **@SageNoob** in the ethereal chambers of Discord. Remember, '
+            # 'this spellwork is an open grimoire, a testament to the open-source magic of our world. Brave '
+            # 'souls wishing to enrich its pages are welcome to journey to the arcane library 📚 of Github: '
+            # 'https://github.com/0nlyDev/w3c-discord-bot. Your wisdom and contributions illuminate our path.'
     },
     'player_stats_by_game_mode': {
         'select_player': '🌌 From the depths of the Dark Portal, select your champion below:',

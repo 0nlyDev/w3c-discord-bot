@@ -26,16 +26,15 @@ class PlayerStatsByGameMode(commands.Cog):
     @app_commands.describe(player_name='Player\'s @DiscordName, just a Name, or BattleTag',
                            gate_way='GateWay, Europe or America)')
     @app_commands.choices(gate_way=[Choice(name='Europe', value='europe'), Choice(name='America', value='america')])
-    async def player_stats_by_game_mode(self,
-                                        interaction,
-                                        player_name: str,
-                                        gate_way: str = None):
+    async def player_stats_by_game_mode(self, interaction, player_name: str, gate_way: str = None):
+        await self.handle_player_stats_by_game_mode(interaction, player_name, gate_way)
 
+    # noinspection PyMethodMayBeStatic
+    async def handle_player_stats_by_game_mode(self, interaction, player_name: str, gate_way: str = None):
         print(f'{interaction.user.display_name} from {interaction.guild.name} used /player_stats_by_game_mode name:'
               f'{player_name} gate_way:{gate_way}')
 
         provided_gate_way = gate_way
-
         user_id = get_user_id_from_mention(player_name)
         engine = get_engine()
         session = create_session(engine)
@@ -118,8 +117,19 @@ class PlayerSearchSelect(discord.ui.Select):
                 await interaction.response.send_message(embed=player_stats_embed, ephemeral=True)
 
 
+@app_commands.context_menu(name='/player_stats_by_game_mode')
+async def player_stats_by_game_mode_context(interaction, user: discord.User):
+    # Access the cog instance via the client (bot) object
+    print('context_menu command: /player_stats_by_game_mode')
+    cog = interaction.client.get_cog('PlayerStatsByGameMode')
+    if cog:
+        await cog.handle_player_stats_by_game_mode(interaction, player_name=user.mention)
+
+
 async def setup(client: commands.Bot):
     await client.add_cog(PlayerStatsByGameMode(client))
+    # Associate the context menu command it with the cog
+    client.tree.add_command(player_stats_by_game_mode_context)
 
 
 def get_user_id_from_mention(mention):
