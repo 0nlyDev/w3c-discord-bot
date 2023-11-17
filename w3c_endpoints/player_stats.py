@@ -2,6 +2,7 @@ import json
 import requests
 
 from w3c_endpoints.player_search import player_search_endpoint
+from responses import responses
 
 RACES = {
     0: ['rnd', 'random', 'rn'],
@@ -40,8 +41,10 @@ def get_player_stats(bnet_tag, gate_way=None, season=None):
 
     if season is None:
         players = player_search_endpoint(bnet_tag)
-        if players and players[0]['seasons']:
+        if players and isinstance(players, list) and players[0]['seasons']:
             season = players[0]['seasons'][0]['id']  # get last played season
+        elif isinstance(players, requests.exceptions.ConnectionError):
+            return responses['error_responses']['connection_error']
         else:
             return None, gate_way
     try:
