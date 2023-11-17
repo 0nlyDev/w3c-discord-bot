@@ -55,13 +55,17 @@ class PlayerStatsByGameMode(commands.Cog):
             if len(search_results) == 1:
                 bnet_tag = search_results[0].split(' ')[0]
                 player_stats, _ = get_player_stats(bnet_tag, gate_way=gate_way)
-                response, view = get_player_stats_embed(player_stats, bnet_tag, gate_way=gate_way)
+                if player_stats and isinstance(player_stats, list):
+                    response, view = get_player_stats_embed(player_stats, bnet_tag, gate_way=gate_way)
+                elif player_stats and isinstance(player_stats, str):
+                    await interaction.response.send_message(content=player_stats, ephemeral=True)
             # Otherwise, display the search menu
             else:
                 response, view = PlayerSearchMenu(player_name, search_results, gate_way, provided_gate_way), None
         if response:
             if hasattr(response, 'children') and len(response.children) > 0:
-                await interaction.response.send_message(THIS_RESPONSE['select_player'], view=response, ephemeral=True)
+                await interaction.response.send_message(content=THIS_RESPONSE['select_player'], view=response,
+                                                        ephemeral=True)
             else:
                 if view:
                     await interaction.response.send_message(embed=response, view=view, ephemeral=True)

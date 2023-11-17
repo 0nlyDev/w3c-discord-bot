@@ -36,11 +36,12 @@ def player_search_endpoint(player_name, last_object_id=None):
 
 def player_search(player_name, last_object_id=None, return_players_string=True):
     player_search_results = player_search_endpoint(player_name, last_object_id)
-    if player_search_results == requests.exceptions.ConnectionError:
+    if isinstance(player_search_results, requests.exceptions.ConnectionError):
         return responses['error_responses']['connection_error']
 
     players = {}
     emojified_player_strings = []
+    # TODO: handle ide warning here
     for player in player_search_results:
         bnet_tag = player['battleTag']
         if '#' not in bnet_tag:
